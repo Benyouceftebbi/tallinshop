@@ -16111,7 +16111,7 @@ const wilayaId = selectedProvince.toString().padStart(2, "0");
                     </div>
                     <Input
                       id="phone"
-                    
+                    type="number"
                       className="rounded-l-xl border-l-0 focus:ring-rose-500 focus:border-rose-500"
                       required
                     />
