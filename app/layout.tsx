@@ -23,16 +23,16 @@ export default function RootLayout({
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
 
-          
+
                        <noscript
           dangerouslySetInnerHTML={{
             __html: `
               <img height="1" width="1" style="display:none"
-              src="https://www.facebook.com/tr?id=900522771814473&ev=PageView&noscript=1" />
+              src="https://www.facebook.com/tr?id=710268394515342&ev=PageView&noscript=1" />
             `,
           }}
         />
-              <FacebookPixel pixelId="900522771814473" />
+              <FacebookPixel pixelId="710268394515342" />
           {children}
         </ThemeProvider>
       </body>
