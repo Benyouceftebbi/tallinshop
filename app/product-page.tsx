@@ -18,7 +18,7 @@ import { Footer } from "@/components/footer"
 import { WhatsAppButton } from "@/components/whatsapp-button"
 import { useProduct } from "@/contexts/product-context"
 import Loading from "./loading"
-import { doc, getDoc } from "firebase/firestore"
+import { addDoc, collection, doc, getDoc } from "firebase/firestore"
 import { firestore } from "@/lib/firebase"
 
 interface CartItem {
@@ -15806,6 +15806,7 @@ export default function ProductPage() {
   const [isLiked, setIsLiked] = useState(false)
   const [showThankYou, setShowThankYou] = useState(false)
   const [cart, setCart] = useState<CartItem[]>([])
+   const [isSubmitting, setIsSubmitting] = useState(false)
   const [quantity, setQuantity] = useState(1)
   const [deliveryPrices, setDeliveryPrices] = useState<{ [key: string]: number }>({});
   const handleQuantityChange = (delta: number) => {
@@ -15855,12 +15856,8 @@ const wilayaId = selectedProvince.toString().padStart(2, "0");
   const currentColorObj =
     productData.colorImages.find((color: any) => color.color === selectedColor) || productData.variants[0].option2
 
-  const currentDeliveryMethod ={id:"1",name:"domicile",discreption:"",cost:400}
-
-  const selectedProvinceObj = {code: "01", name: "blida", communes: ["Commune1", "Commune2", "Commune3"]} // Replace with actual province data
-  const availableCommunes = selectedProvinceObj?.communes || []
  const productTotal = productData.priceAfter * quantity
-  const shippingCost = currentDeliveryMethod?.cost || 0
+  const shippingCost = deliveryPrices[selectedDeliveryMethod]|| 0
   const grandTotal = productTotal + shippingCost
 
   const handleImageZoom = (imageSrc: string) => {
@@ -15870,14 +15867,19 @@ const wilayaId = selectedProvince.toString().padStart(2, "0");
 
 
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log("Form submitted with:", {
-      color: selectedColor,
-      size: selectedSize,
-      quantity: quantity,
-      total: grandTotal,
-    })
+        setIsSubmitting(true)
+ try {
+      const docRef = await addDoc(collection(firestore, "orders"), orderData)
+      console.log("Order submitted successfully with ID: ", docRef.id)
+      setShowThankYou(true)
+    } catch (error) {
+      console.error("Error adding document: ", error)
+      alert("حدث خطأ أثناء إرسال طلبك. يرجى المحاولة مرة أخرى.")
+    } finally {
+      setIsSubmitting(false)
+    }
     setShowThankYou(true)
 
   }
@@ -15970,7 +15972,9 @@ const wilayaId = selectedProvince.toString().padStart(2, "0");
                {"DZ"}  {productData.priceAfter}
               </span>
            
-                <Badge className="bg-rose-500 text-white px-3 py-1 text-sm">{ "En vente"}</Badge>
+     <Badge className="inline-flex items-center whitespace-nowrap bg-rose-500 text-white px-3 py-1 text-sm">
+  {"En vente"}
+</Badge>
            
             </div>
 
@@ -16240,6 +16244,7 @@ const wilayaId = selectedProvince.toString().padStart(2, "0");
     <div className="max-w-md mx-auto">
       <Button
         type="submit"
+         disabled={isSubmitting}
         className="w-full bg-slate-800 hover:bg-slate-900 dark:bg-rose-600 dark:hover:bg-rose-700 text-white py-4 text-lg font-bold rounded-xl shadow-lg transform hover:scale-105 transition-all duration-300"
       >
         <LucideIcons.ShoppingCart className="w-5 h-5 ml-2" />
