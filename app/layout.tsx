@@ -22,6 +22,8 @@ export default function RootLayout({
     <html lang="ar" dir="rtl" suppressHydrationWarning>
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
+
+          
                        <noscript
           dangerouslySetInnerHTML={{
             __html: `
