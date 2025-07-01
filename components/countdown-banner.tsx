@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
 import { Clock } from "lucide-react"
+import Image from "next/image"
 
 export function CountdownBanner() {
   const calculateTimeLeft = () => {
@@ -44,9 +44,13 @@ export function CountdownBanner() {
           {timerComponents.length ? timerComponents : <span>Time's up!</span>}
         </div>
       </div>
-      <Button variant="secondary" className="bg-white text-rose-600 hover:bg-rose-100 font-bold">
-        اطلبي الآن قبل نفاذ الكمية
-      </Button>
+      <Image
+        src="/logo.png?height=40&width=120"
+        alt="Tallin Logo"
+        width={120}
+        height={40}
+        className="object-contain"
+      />
     </div>
   )
 }

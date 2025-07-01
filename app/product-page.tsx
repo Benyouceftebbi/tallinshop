@@ -15986,7 +15986,7 @@ const wilayaId = selectedProvince.toString().padStart(2, "0");
                 veut pas choisir entre style et confort.
               </p>
             </div>
-                         <div className="space-y-4 order-1 lg:order-6">
+                         <div className="space-y-4 order-6 lg:order-6">
                 <Label className="text-lg font-semibold text-gray-900 dark:text-white">
                   {"Quantité"}
                 </Label>
@@ -16076,180 +16076,178 @@ const wilayaId = selectedProvince.toString().padStart(2, "0");
 
           </div>
         </div>
-
-        <form onSubmit={handleFormSubmit}>
-          <section className="mt-20 max-w-4xl mx-auto">
-            <div className="bg-white dark:bg-slate-800/50 p-8 rounded-3xl shadow-xl border border-gray-100 dark:border-slate-800">
-              <h3 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-8 flex items-center justify-center gap-2">
-                <LucideIcons.Truck className="w-6 h-6 text-rose-500" />
-                {"Type de livraison"}
-              </h3>
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <Label htmlFor="name" className="text-sm font-semibold text-gray-700 dark:text-stone-300 mb-2 block">
-                    {"nom"} <span className="text-red-500">*</span>
-                  </Label>
-                  <div className="flex">
-                    <div className="bg-stone-100 dark:bg-slate-700 px-4 py-3 border border-r-0 border-stone-200 dark:border-stone-600 rounded-r-xl">
-                      <LucideIcons.User className="w-5 h-5 text-gray-600 dark:text-stone-400" />
-                    </div>
-                    <Input
-                      id="name"
-                   
-                      className="rounded-l-xl border-l-0 focus:ring-rose-500 focus:border-rose-500"
-                      required
-                    />
-                  </div>
-                </div>
-                <div>
-                  <Label htmlFor="phone" className="text-sm font-semibold text-gray-700 dark:text-stone-300 mb-2 block">
-                    {"telephone"} <span className="text-red-500">*</span>
-                  </Label>
-                  <div className="flex">
-                    <div className="bg-stone-100 dark:bg-slate-700 px-4 py-3 border border-r-0 border-stone-200 dark:border-stone-600 rounded-r-xl">
-                      <span className="text-gray-600 dark:text-stone-400">📞</span>
-                    </div>
-                    <Input
-                      id="phone"
-                    type="number"
-                      className="rounded-l-xl border-l-0 focus:ring-rose-500 focus:border-rose-500"
-                      required
-                    />
-                  </div>
-                </div>
-                <div>
-                  <Label
-                    htmlFor="wilayaa"
-                    className="text-sm font-semibold text-gray-700 dark:text-stone-300 mb-2 block"
-                  >
-                    {"wilaya"}
-                  </Label>
-                  <Select
-                    value={selectedProvince.toString()}
-                    onValueChange={(value) => {
-                      setSelectedProvince(value)
-                      setSelectedCommune("")
-                    }}
-                    required
-                  >
-                    <SelectTrigger className="w-full focus:ring-rose-500 focus:border-rose-500">
-                      <div className="flex items-center gap-2">
-                        <span className="text-gray-600 dark:text-stone-400">📍</span>
-                        <SelectValue placeholder={"alger"} />
-                      </div>
-                    </SelectTrigger>
-                    <SelectContent>
-                      {wilayass.map((wilaya: any) => (
-                        <SelectItem key={wilaya.id} value={wilaya.id.toString()}>
-                          {wilaya.id} - {wilaya.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label
-                    htmlFor="commune"
-                    className="text-sm font-semibold text-gray-700 dark:text-stone-300 mb-2 block"
-                  >
-                    {"commune"} <span className="text-red-500">*</span>
-                  </Label>
-                  <Select
-                    value={selectedCommune}
-                    onValueChange={setSelectedCommune}
-                    disabled={!selectedProvince}
-                    required
-                  >
-                    <SelectTrigger className="w-full focus:ring-rose-500 focus:border-rose-500">
-                      <SelectValue placeholder={"commune"} />
-                    </SelectTrigger>
-                    <SelectContent>
-              {comuness
-  .filter((commune) => commune.wilaya_id.toString() === selectedProvince)
-  .map((commune) => (
-    <SelectItem key={commune.id} value={commune.name}>
-      {commune.name}
-    </SelectItem>
-))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              <div className="mt-6">
-                <Label className="text-sm font-semibold text-gray-700 dark:text-stone-300 mb-4 block">
-                  {"type de livraison"}
-                </Label>
-                <RadioGroup
-                  value={selectedDeliveryMethod || ""}
-                  onValueChange={setSelectedDeliveryMethod}
-                  className="space-y-3"
-                >
-                  {[  {
-        "id": "domicile",
-        "name": "À domicile",
-        "description": "Livraison à votre adresse",
-        "cost": 400
-      },
-      {
-        "id": "stopdesk",
-        "name": "StopDesk",
-        "description": "Point de retrait",
-        "cost": 200,
-        "info": "Sélectionnez un point de retrait StopDesk près de chez vous après validation de la commande."
-      }].map((method: any) => (
-                    <div
-                      key={method.id}
-                      className="flex items-center space-x-3 p-4 border-2 border-stone-200 dark:border-stone-700 rounded-xl hover:bg-stone-50 dark:hover:bg-slate-700/50 transition-colors"
-                    >
-                      <RadioGroupItem value={method.id} id={method.id} className="text-rose-500" />
-                      <Label htmlFor={method.id} className="text-sm font-medium cursor-pointer flex-1">
-                        <span className="font-semibold text-gray-800 dark:text-white">{method.name}</span> -{" "}
-                        {method.description}
-                        <span className="block text-xs text-gray-500 dark:text-stone-400 mt-1">
-                          +{"DZ"} {deliveryPrices[method.id]?.toFixed(2) || "0.00"}
-                        </span>
-                      </Label>
-                    </div>
-                  ))}
-                </RadioGroup>
-
-              </div>
-              <div className="mt-8 p-6 bg-stone-100 dark:bg-slate-800 rounded-xl">
-                <div className="space-y-3">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600 dark:text-stone-300">{"prix d article"}</span>
-                    <span className="font-semibold text-gray-900 dark:text-white">
-                      {"DZ"} {productTotal.toFixed(2)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600 dark:text-stone-300">{"prix de livraison"}</span>
-                    <span className="font-semibold text-gray-900 dark:text-white">
-                      {"DZ"} {shippingCost.toFixed(2)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between font-bold text-lg border-t pt-3 border-gray-200 dark:border-stone-700">
-                    <span className="text-gray-900 dark:text-white">{"prix total"}</span>
-                    <span className="text-rose-600 dark:text-rose-400">
-                      {"DZ"} {grandTotal.toFixed(2)}
-                    </span>
-                  </div>
-                </div>
-              </div>
+<form onSubmit={handleFormSubmit}>
+  <section className="mt-20 max-w-4xl mx-auto">
+    <div className="bg-white dark:bg-slate-800/50 p-8 rounded-3xl shadow-xl border border-gray-100 dark:border-slate-800">
+      <h3 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-8 flex items-center justify-center gap-2">
+        <LucideIcons.Truck className="w-6 h-6 text-rose-500" />
+        {"Type de livraison"} (نوع التوصيل)
+      </h3>
+      <div className="grid md:grid-cols-2 gap-6">
+        <div>
+          <Label htmlFor="name" className="text-sm font-semibold text-gray-700 dark:text-stone-300 mb-2 block">
+            {"Nom"} (الاسم) <span className="text-red-500">*</span>
+          </Label>
+          <div className="flex">
+            <div className="bg-stone-100 dark:bg-slate-700 px-4 py-3 border border-r-0 border-stone-200 dark:border-stone-600 rounded-r-xl">
+              <LucideIcons.User className="w-5 h-5 text-gray-600 dark:text-stone-400" />
             </div>
-          </section>
-         <div className="fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-gray-200 dark:border-slate-800 p-4 z-50">
-            <div className="max-w-md mx-auto">
-              <Button
-                type="submit"
-                className="w-full bg-slate-800 hover:bg-slate-900 dark:bg-rose-600 dark:hover:bg-rose-700 text-white py-4 text-lg font-bold rounded-xl shadow-lg transform hover:scale-105 transition-all duration-300"
-              >
-                <LucideIcons.ShoppingCart className="w-5 h-5 ml-2" />
-               {"اطلب الآن - السعر الإجمالي"} {"DZ"} {grandTotal.toFixed(2)}
-              </Button>
-            </div>
+            <Input
+              id="name"
+              className="rounded-l-xl border-l-0 focus:ring-rose-500 focus:border-rose-500"
+              required
+            />
           </div>
-        </form>
+        </div>
+        <div>
+          <Label htmlFor="phone" className="text-sm font-semibold text-gray-700 dark:text-stone-300 mb-2 block">
+            {"Téléphone"} (رقم الهاتف) <span className="text-red-500">*</span>
+          </Label>
+          <div className="flex">
+            <div className="bg-stone-100 dark:bg-slate-700 px-4 py-3 border border-r-0 border-stone-200 dark:border-stone-600 rounded-r-xl">
+              <span className="text-gray-600 dark:text-stone-400">📞</span>
+            </div>
+            <Input
+              id="phone"
+              type="tel"
+              inputMode="tel"
+              pattern="[0-9]*"
+              className="rounded-l-xl border-l-0 focus:ring-rose-500 focus:border-rose-500"
+              required
+            />
+          </div>
+        </div>
+        <div>
+          <Label htmlFor="wilayaa" className="text-sm font-semibold text-gray-700 dark:text-stone-300 mb-2 block">
+            {"Wilaya"} (الولاية) <span className="text-red-500">*</span>
+          </Label>
+          <Select
+            value={selectedProvince.toString()}
+            onValueChange={(value) => {
+              setSelectedProvince(value)
+              setSelectedCommune("")
+            }}
+            required
+          >
+            <SelectTrigger className="w-full focus:ring-rose-500 focus:border-rose-500">
+              <div className="flex items-center gap-2">
+                <span className="text-gray-600 dark:text-stone-400">📍</span>
+                <SelectValue placeholder={"Wilaya"} />
+              </div>
+            </SelectTrigger>
+            <SelectContent>
+              {wilayass.map((wilaya: any) => (
+                <SelectItem key={wilaya.id} value={wilaya.id.toString()}>
+                  {wilaya.id} - {wilaya.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <Label htmlFor="commune" className="text-sm font-semibold text-gray-700 dark:text-stone-300 mb-2 block">
+            {"Commune"} (البلدية) <span className="text-red-500">*</span>
+          </Label>
+          <Select
+            value={selectedCommune}
+            onValueChange={setSelectedCommune}
+            disabled={!selectedProvince}
+            required
+          >
+            <SelectTrigger className="w-full focus:ring-rose-500 focus:border-rose-500">
+              <SelectValue placeholder={"Commune"} />
+            </SelectTrigger>
+            <SelectContent>
+              {comuness
+                .filter((commune) => commune.wilaya_id.toString() === selectedProvince)
+                .map((commune) => (
+                  <SelectItem key={commune.id} value={commune.name}>
+                    {commune.name}
+                  </SelectItem>
+                ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      <div className="mt-6">
+        <Label className="text-sm font-semibold text-gray-700 dark:text-stone-300 mb-4 block">
+          {"Type de livraison"} (نوع التوصيل) <span className="text-red-500">*</span>
+        </Label>
+        <RadioGroup
+          value={selectedDeliveryMethod || ""}
+          onValueChange={setSelectedDeliveryMethod}
+          className="space-y-3"
+          required
+        >
+          {[
+            {
+              id: "domicile",
+              name: "À domicile",
+              description: "Livraison à votre adresse",
+              cost: 400,
+            },
+            {
+              id: "stopdesk",
+              name: "StopDesk",
+              description: "Point de retrait",
+              cost: 200,
+              info: "Sélectionnez un point de retrait StopDesk près de chez vous après validation de la commande.",
+            },
+          ].map((method: any) => (
+            <div
+              key={method.id}
+              className="flex items-center space-x-3 p-4 border-2 border-stone-200 dark:border-stone-700 rounded-xl hover:bg-stone-50 dark:hover:bg-slate-700/50 transition-colors"
+            >
+              <RadioGroupItem value={method.id} id={method.id} className="text-rose-500" />
+              <Label htmlFor={method.id} className="text-sm font-medium cursor-pointer flex-1">
+                <span className="font-semibold text-gray-800 dark:text-white">{method.name}</span> - {method.description}
+                <span className="block text-xs text-gray-500 dark:text-stone-400 mt-1">
+                  +{"DZ"} {deliveryPrices[method.id]?.toFixed(2) || "0.00"}
+                </span>
+              </Label>
+            </div>
+          ))}
+        </RadioGroup>
+      </div>
+
+      <div className="mt-8 p-6 bg-stone-100 dark:bg-slate-800 rounded-xl">
+        <div className="space-y-3">
+          <div className="flex justify-between text-sm">
+            <span className="text-gray-600 dark:text-stone-300">{"Prix d'article"} (سعر المنتج)</span>
+            <span className="font-semibold text-gray-900 dark:text-white">
+              {"DZ"} {productTotal.toFixed(2)}
+            </span>
+          </div>
+          <div className="flex justify-between text-sm">
+            <span className="text-gray-600 dark:text-stone-300">{"Frais de livraison"} (سعر التوصيل)</span>
+            <span className="font-semibold text-gray-900 dark:text-white">
+              {"DZ"} {shippingCost.toFixed(2)}
+            </span>
+          </div>
+          <div className="flex justify-between font-bold text-lg border-t pt-3 border-gray-200 dark:border-stone-700">
+            <span className="text-gray-900 dark:text-white">{"Total"} (السعر الإجمالي)</span>
+            <span className="text-rose-600 dark:text-rose-400">
+              {"DZ"} {grandTotal.toFixed(2)}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div className="fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-gray-200 dark:border-slate-800 p-4 z-50">
+    <div className="max-w-md mx-auto">
+      <Button
+        type="submit"
+        className="w-full bg-slate-800 hover:bg-slate-900 dark:bg-rose-600 dark:hover:bg-rose-700 text-white py-4 text-lg font-bold rounded-xl shadow-lg transform hover:scale-105 transition-all duration-300"
+      >
+        <LucideIcons.ShoppingCart className="w-5 h-5 ml-2" />
+        {"اطلب الآن - السعر الإجمالي"} {"DZ"} {grandTotal.toFixed(2)}
+      </Button>
+    </div>
+  </div>
+</form>
 
         <section className="mt-20 py-20 bg-gradient-to-br from-stone-100 to-rose-50 dark:from-slate-800 dark:to-rose-900/40 rounded-3xl overflow-hidden">
           <div className="max-w-6xl mx-auto px-6">
@@ -16301,57 +16299,34 @@ const wilayaId = selectedProvince.toString().padStart(2, "0");
             </div>
           </div>
         </section>
-
         <section className="mt-20 py-16">
           <div className="max-w-6xl mx-auto px-6">
             <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-12">
-              Ce que disent nos clientes
+              Avis de nos clientes 
             </h2>
-            <div className="grid md:grid-cols-3 gap-8">
-              {productData.testimonials.map((testimonial: any, index: number) => (
-                <Card
-                  key={index}
-                  className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 bg-white dark:bg-slate-800 overflow-hidden"
-                >
-                  {testimonial.reviewImage && (
-                    <div className="aspect-video relative">
-                      <Image
-                        src={testimonial.reviewImage || "/placeholder.svg"}
-                        alt={`Review from ${testimonial.name}`}
-                        fill
-                        className="object-cover"
-                      />
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {productData.testimonials
+                .filter((testimonial: any) => testimonial.reviewImage)
+                .map((testimonial: any, index: number) => (
+                  <div
+                    key={index}
+                    className="group relative aspect-square rounded-lg overflow-hidden cursor-zoom-in shadow-lg hover:shadow-xl transition-all duration-300"
+                    onClick={() => handleImageZoom(testimonial.reviewImage)}
+                  >
+                    <Image
+                      src={testimonial.reviewImage || "/placeholder.svg"}
+                      alt={`Avis client ${index + 1}`}
+                      fill
+                      className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <LucideIcons.ZoomIn className="w-8 h-8 text-white" />
                     </div>
-                  )}
-                  <CardContent className="p-6">
-                    <div className="flex items-center mb-4">
-                      <Image
-                        src={testimonial.avatar || "/placeholder.svg"}
-                        alt={testimonial.name}
-                        width={60}
-                        height={60}
-                        className="rounded-full mr-4"
-                      />
-                      <div>
-                        <h4 className="font-semibold text-gray-900 dark:text-white">{testimonial.name}</h4>
-                        <p className="text-sm text-gray-600 dark:text-stone-400">
-                          {testimonial.age} ans, {testimonial.location}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex mb-3">
-                      {[...Array(testimonial.rating)].map((_, i) => (
-                        <LucideIcons.Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
-                      ))}
-                    </div>
-                    <p className="text-gray-700 dark:text-stone-300 italic">"{testimonial.comment}"</p>
-                  </CardContent>
-                </Card>
-              ))}
+                  </div>
+                ))}
             </div>
           </div>
         </section>
-
         <Faq />
 
         {isZoomed && (
