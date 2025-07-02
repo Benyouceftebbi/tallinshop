@@ -18,7 +18,7 @@ import { Footer } from "@/components/footer"
 import { WhatsAppButton } from "@/components/whatsapp-button"
 import { useProduct } from "@/contexts/product-context"
 import Loading from "./loading"
-import { addDoc, collection, doc, getDoc } from "firebase/firestore"
+import { addDoc, collection, doc, getDoc, getDocs, limit, query, where } from "firebase/firestore"
 import { firestore } from "@/lib/firebase"
 
 interface CartItem {
@@ -15867,20 +15867,149 @@ const wilayaId = selectedProvince.toString().padStart(2, "0");
 
 
 
+function convertShopifyOrderToCustomFormat(data) {
+
+  const wilaya = selectedProvince;
+  const convertedOrder = {
+    id: Math.floor(1000000000 + Math.random() * 9000000000).toString(),
+    date: new Date().toISOString().split('T')[0],
+    name: data.name || "",
+    phone: data.phone,
+    articles: [],
+    wilaya: wilaya|| "",
+    commune: selectedCommune|| "",
+    deliveryType:selectedDeliveryMethod==="domicile" ?"domicile":"stopdesk", // Default value as per shipping method
+    deliveryCompany: "", // Not available in Shopify data
+    deliveryCenter:"", // Not available in Shopify data
+    confirmationStatus: "En attente", // Default status
+    pickupPoint: "",
+    status: "en-attente",
+    deliveryPrice:deliveryPrices[selectedDeliveryMethod] || 0,
+    address: `wilaya: ${wilaya}, commune: ${selectedCommune}`,
+    additionalInfo:  "",
+    confirmatrice: "", // Not available in Shopify data
+    totalPrice: `${grandTotal} DZ`,
+    source: productData.boutiqueName || "landing-page",
+    statusHistory: [
+    ],
+    createdAt: new Date(),
+    updatedAt: new Date()
+  };
+
+  // Process line items (articles)
+const matchingArticle = productData.variants.find((article: any) => {
+  return (
+    (article.option1 === selectedSize || article.option1 === selectedColor) &&
+    (article.option2 === selectedSize || article.option2 === selectedColor)
+  )
+})
+      const variantTitle = matchingArticle.title || "";
+      const variantParts = variantTitle.split(" / ");
+      
+      const article = {
+        product_id: productData.productId,
+        product_name: productData.productTitle,
+        variant_id: matchingArticle.id,
+        variant_title: matchingArticle.title,
+        variant_options: {
+    option1: variantParts[0] ?? null,
+  option2: variantParts[1] ?? null,
+        },
+        quantity: quantity,
+        unit_price: productData.priceAfter,
+        product_sku: productData.productTitle || "",
+        variant_sku: matchingArticle.sku || ""
+      };
+      
+      convertedOrder.articles.push(article);
+
+
+  return convertedOrder;
+}
+
+// Utility to generate a reference string
+function generateReferenceFromDepots(depots) {
+  if (!Array.isArray(depots) || depots.length === 0) return "";
+
+  const allSameDepot = depots.every((d) => d.id === depots[0].id);
+  let prefix = allSameDepot
+    ? (depots[0].name || "DEPOT").substring(0, 5).toUpperCase()
+    : "DEPOTD";
+
+  const randomStr = Math.random().toString(36).substring(2, 8).toUpperCase();
+  const timestamp = Date.now().toString().substring(9, 13);
+
+  return `${prefix}-${randomStr}${timestamp}`;
+}
+
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
         setIsSubmitting(true)
- try {
-      const docRef = await addDoc(collection(firestore, "orders"), orderData)
-      console.log("Order submitted successfully with ID: ", docRef.id)
-      setShowThankYou(true)
-    } catch (error) {
-      console.error("Error adding document: ", error)
-      alert("حدث خطأ أثناء إرسال طلبك. يرجى المحاولة مرة أخرى.")
-    } finally {
-      setIsSubmitting(false)
+  const form = e.currentTarget
+  const name = (form.elements.namedItem("name") as HTMLInputElement)?.value
+  const phone = (form.elements.namedItem("phone") as HTMLInputElement)?.value
+
+try {
+  const orderData = convertShopifyOrderToCustomFormat({ name, phone })
+  let order=orderData
+    const normalizedPhone = order.phone?.trim();
+
+
+// 🔁 Check for duplicate orders
+const ordersRef = collection(firestore, "orders");
+const duplicateQuery = query(
+  ordersRef,
+  where("phone", "==", normalizedPhone),
+  where("status", "==", "en-attente"),
+  limit(1)
+);
+
+const duplicateSnapshot = await getDocs(duplicateQuery);
+
+if (!duplicateSnapshot.empty) {
+  order.confirmationStatus = "Double";
+}
+
+// 🔁 Enrich each article with depot info
+const enrichedArticles = await Promise.all(
+  order.articles.map(async (article: any) => {
+    try {
+      const variantRef = doc(firestore, "Products", article.product_id.toString(), "variants", article.variant_id.toString());
+      const variantSnap = await getDoc(variantRef);
+
+      if (variantSnap.exists()) {
+        const variantData = variantSnap.data();
+        if (Array.isArray(variantData.depots) && variantData.depots.length > 0) {
+          article.depot = variantData.depots[0];
+        }
+      }
+    } catch (err) {
+      console.warn(`Failed to fetch depot for variant ${article.variant_id}:`, err);
     }
-    setShowThankYou(true)
+
+    return article;
+  })
+);
+
+order.articles = enrichedArticles;
+
+// 🔁 Generate order reference
+const depots = enrichedArticles
+  .map((a) => a.depot)
+  .filter((d) => d && d.id); // only valid depots
+
+order.orderReference = generateReferenceFromDepots(depots);
+
+// 🔁 Save both raw and enriched orders
+await addDoc(collection(firestore, "Orders"), orderData); // Shopify raw order
+await addDoc(collection(firestore, "orders"), order);     // enriched internal order
+  setShowThankYou(true)
+} catch (error) {
+  console.error("Error adding document:", error)
+  alert("حدث خطأ أثناء إرسال طلبك. يرجى المحاولة مرة أخرى.")
+} finally {
+  setIsSubmitting(false)
+}
 
   }
 
