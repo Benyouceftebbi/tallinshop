@@ -16490,7 +16490,7 @@ await addDoc(collection(firestore, "orders"), order);     // enriched internal o
         )}
       </main>
 
-      <Footer />
+      <Footer facebookUrl={productData.facebookUrl} instagramUrl={productData.instagramUrl}/>
       <WhatsAppButton />
       <ThankYouModal isOpen={showThankYou} onClose={() => setShowThankYou(false)} />
 
