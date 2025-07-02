@@ -16095,7 +16095,7 @@ await addDoc(collection(firestore, "orders"), order);     // enriched internal o
           <div className="flex flex-col gap-8 lg:order-2">
             <div className="flex items-center gap-4 p-4 bg-stone-100 dark:bg-slate-800 rounded-xl order-3 lg:order-2">
               <span className="text-lg text-gray-500 dark:text-stone-400 line-through">
-                {"DZ"} {productData.priceBefore.toFixed(2)}
+                {"DZ"} {productData.priceBefore}
               </span>
               <span className="text-3xl font-bold text-gray-900 dark:text-white">
                {"DZ"}  {productData.priceAfter}
@@ -16336,7 +16336,7 @@ await addDoc(collection(firestore, "orders"), order);     // enriched internal o
               <Label htmlFor={method.id} className="text-sm font-medium cursor-pointer flex-1">
                 <span className="font-semibold text-gray-800 dark:text-white">{method.name}</span> - {method.description}
                 <span className="block text-xs text-gray-500 dark:text-stone-400 mt-1">
-                  +{"DZ"} {deliveryPrices[method.id]?.toFixed(2) || "0.00"}
+                  +{"DZ"} {deliveryPrices[method.id]|| "0.00"}
                 </span>
               </Label>
             </div>
@@ -16349,19 +16349,19 @@ await addDoc(collection(firestore, "orders"), order);     // enriched internal o
           <div className="flex justify-between text-sm">
             <span className="text-gray-600 dark:text-stone-300">{"Prix d'article"} (سعر المنتج)</span>
             <span className="font-semibold text-gray-900 dark:text-white">
-              {"DZ"} {productTotal.toFixed(2)}
+              {"DZ"} {productTotal}
             </span>
           </div>
           <div className="flex justify-between text-sm">
             <span className="text-gray-600 dark:text-stone-300">{"Frais de livraison"} (سعر التوصيل)</span>
             <span className="font-semibold text-gray-900 dark:text-white">
-              {"DZ"} {shippingCost.toFixed(2)}
+              {"DZ"} {shippingCost}
             </span>
           </div>
           <div className="flex justify-between font-bold text-lg border-t pt-3 border-gray-200 dark:border-stone-700">
             <span className="text-gray-900 dark:text-white">{"Total"} (السعر الإجمالي)</span>
             <span className="text-rose-600 dark:text-rose-400">
-              {"DZ"} {grandTotal.toFixed(2)}
+              {"DZ"} {grandTotal}
             </span>
           </div>
         </div>
@@ -16377,7 +16377,7 @@ await addDoc(collection(firestore, "orders"), order);     // enriched internal o
         className="w-full bg-slate-800 hover:bg-slate-900 dark:bg-rose-600 dark:hover:bg-rose-700 text-white py-4 text-lg font-bold rounded-xl shadow-lg transform hover:scale-105 transition-all duration-300"
       >
         <LucideIcons.ShoppingCart className="w-5 h-5 ml-2" />
-        {"اطلب الآن - السعر الإجمالي"} {"DZ"} {grandTotal.toFixed(2)}
+        {"اطلب الآن - السعر الإجمالي"} {"DZ"} {grandTotal}
       </Button>
     </div>
   </div>
