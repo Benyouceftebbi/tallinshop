@@ -3,7 +3,8 @@ import type { Metadata } from "next/metadata"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
-import FacebookPixel from "@/hooks/facebook-pixel"
+import  { FacebookPixelEvents } from "@/hooks/facebook-pixel"
+import { Suspense } from "react"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -20,19 +21,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ar" dir="rtl" suppressHydrationWarning>
+ 
       <body className={inter.className}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
 
-
-                       <noscript
-          dangerouslySetInnerHTML={{__html: `
-              <img height="1" width="1" style="display:none"
-              src="https://www.facebook.com/tr?id=900522771814473&ev=PageView&noscript=1" />
-            `,
-          }}
-        />
-              <FacebookPixel pixelId="900522771814473" />
+          
           {children}
+           <Suspense fallback={null}>
+          <FacebookPixelEvents />
+        </Suspense>
         </ThemeProvider>
       </body>
     </html>
