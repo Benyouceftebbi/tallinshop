@@ -16004,14 +16004,6 @@ order.orderReference = generateReferenceFromDepots(depots);
 await addDoc(collection(firestore, "Orders"), orderData); // Shopify raw order
 await addDoc(collection(firestore, "orders"), order);     // enriched internal order
 
-if (typeof window !== "undefined" && window.fbq) {
-  window.fbq("track", "Purchase", {
-    value: grandTotal,
-    currency: "DZD",
-    content_type: "product",
-    content_ids: [productData.productId],
-  });
-}
   setShowThankYou(true)
 } catch (error) {
   console.error("Error adding document:", error)
