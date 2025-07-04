@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
 import { firestore } from "@/lib/firebase"
-import { collection, getDocs } from "firebase/firestore"
+import { collection, doc, getDoc, getDocs } from "firebase/firestore"
 
 // Define the type for your product data for better type safety
 // A more generic type might be needed if your Firestore data structure varies
@@ -21,29 +21,39 @@ export function ProductProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const landingPageCollectionRef = collection(firestore, "landingPages")
-        const querySnapshot = await getDocs(landingPageCollectionRef)
+ useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const searchParams = new URLSearchParams(window.location.search)
+      const docIdFromURL = searchParams.get("p")
+      const defaultDocId = "70Yit9W3jdbmc73MfOj7"
 
-        if (querySnapshot.empty) {
-          setError("No documents found in the 'landingpage' collection.")
-        } else {
-          // Assuming the entire product page data is in the first document
-          const docData = querySnapshot.docs[0].data() as ProductDataType
-          setProductData(docData)
-        }
-      } catch (err) {
-        setError("Failed to fetch product data from Firebase.")
-        console.error(err)
-      } finally {
-        setLoading(false)
+      const docIdToFetch = docIdFromURL || defaultDocId
+      const docRef = doc(firestore, "landingPages", docIdToFetch)
+      let docSnap = await getDoc(docRef)
+
+      // If the document ID from the URL doesn't exist, fall back to default
+      if (!docSnap.exists() && docIdFromURL) {
+        const fallbackRef = doc(firestore, "landingPages", defaultDocId)
+        docSnap = await getDoc(fallbackRef)
       }
-    }
 
-    fetchData()
-  }, [])
+      if (!docSnap.exists()) {
+        setError("Document not found.")
+      } else {
+        const docData = docSnap.data() as ProductDataType
+        setProductData(docData)
+      }
+    } catch (err) {
+      setError("Failed to fetch product data from Firebase.")
+      console.error(err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  fetchData()
+}, [])
 
   const value = { productData, loading, error }
 
