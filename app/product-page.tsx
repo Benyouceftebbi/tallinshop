@@ -16008,10 +16008,9 @@ await addDoc(collection(firestore, "orders"), {...order,slug:productData.slug});
 if (typeof window !== "undefined") {
   if (window.fbq) {
     window.fbq("track", "Purchase", {
-      value: grandTotal,
-      currency: "DZD",
-      content_type: "product",
-      content_ids: [productData.productId?.toString()],
+ value: 2990,
+  currency: "DZD",
+
     });
   }
    if (window.ttq) {
