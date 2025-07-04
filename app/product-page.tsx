@@ -16005,9 +16005,17 @@ order.orderReference = generateReferenceFromDepots(depots);
 // 🔁 Save both raw and enriched orders
 await addDoc(collection(firestore, "Orders"), orderData); // Shopify raw order
 await addDoc(collection(firestore, "orders"), order);     // enriched internal order
-router.push(`/thank-you?name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}&total=${grandTotal}`);
+if (typeof window !== "undefined" && window.ttq) {
+  window.ttq.track("CompletePayment", {
+    content_type: "product",
+    content_id: productData.productId?.toString(), // ✅ required
+    value: grandTotal,
+    currency: "DZD",
+  });
+}
+//router.push(`/thank-you?name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}&total=${grandTotal}`);
 
- //// setShowThankYou(true)
+ setShowThankYou(true)
 } catch (error) {
   console.error("Error adding document:", error)
   alert("حدث خطأ أثناء إرسال طلبك. يرجى المحاولة مرة أخرى.")
