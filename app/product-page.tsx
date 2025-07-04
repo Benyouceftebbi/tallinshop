@@ -16115,6 +16115,9 @@ await addDoc(collection(firestore, "orders"), order);     // enriched internal o
               <h1 className="text-4xl font-bold text-gray-900 dark:text-white leading-tight">
                 {productData.title}
               </h1>
+                    <h1 className="text-4xl font-bold text-gray-900 dark:text-white leading-tight">
+                {productData.productTitle}
+              </h1>
               <p className="text-gray-600 dark:text-stone-300 text-lg leading-relaxed hidden md:block">
                 Découvrez l'élégance et le confort avec nos mules sabots premium. Parfaites pour la femme moderne qui ne
                 veut pas choisir entre style et confort.
