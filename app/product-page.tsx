@@ -20,6 +20,7 @@ import { useProduct } from "@/contexts/product-context"
 import Loading from "./loading"
 import { addDoc, collection, doc, getDoc, getDocs, limit, query, where } from "firebase/firestore"
 import { firestore } from "@/lib/firebase"
+import { useRouter } from "next/navigation"
 
 interface CartItem {
   id: string
@@ -15942,6 +15943,7 @@ function generateReferenceFromDepots(depots) {
   return `${prefix}-${randomStr}${timestamp}`;
 }
 
+const router = useRouter();
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
         setIsSubmitting(true)
@@ -16003,8 +16005,9 @@ order.orderReference = generateReferenceFromDepots(depots);
 // 🔁 Save both raw and enriched orders
 await addDoc(collection(firestore, "Orders"), orderData); // Shopify raw order
 await addDoc(collection(firestore, "orders"), order);     // enriched internal order
+router.push(`/thank-you?name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}&total=${grandTotal}`);
 
-  setShowThankYou(true)
+ //// setShowThankYou(true)
 } catch (error) {
   console.error("Error adding document:", error)
   alert("حدث خطأ أثناء إرسال طلبك. يرجى المحاولة مرة أخرى.")
