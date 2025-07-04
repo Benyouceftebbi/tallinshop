@@ -16005,13 +16005,24 @@ order.orderReference = generateReferenceFromDepots(depots);
 // 🔁 Save both raw and enriched orders
 await addDoc(collection(firestore, "Orders"), {...orderData,slug:productData.slug}); // Shopify raw order
 await addDoc(collection(firestore, "orders"), {...order,slug:productData.slug});     // enriched internal order
-if (typeof window !== "undefined" && window.ttq) {
+if (typeof window !== "undefined") {
+  if (window.fbq) {
+    window.fbq("track", "Purchase", {
+      value: grandTotal,
+      currency: "DZD",
+      content_type: "product",
+      content_ids: [productData.productId?.toString()],
+    });
+  }
+   if (window.ttq) {
   window.ttq.track("CompletePayment", {
     content_type: "product",
     content_id: productData.productId?.toString(), // ✅ required
     value: grandTotal,
     currency: "DZD",
   });
+}
+
 }
 //router.push(`/thank-you?name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}&total=${grandTotal}`);
 
