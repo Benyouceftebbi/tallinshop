@@ -21,6 +21,7 @@ import Loading from "./loading"
 import { addDoc, collection, doc, getDoc, getDocs, limit, query, where } from "firebase/firestore"
 import { firestore } from "@/lib/firebase"
 import { useRouter } from "next/navigation"
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 
 interface CartItem {
   id: string
@@ -15793,7 +15794,238 @@ const wilayass=[
     "delivery_time_payment": 10
   }
 ]
+const OrderSheet = ({
+  productData,
+  selectedColor,
+  selectedSize,
+  quantity,
+  onQuantityChange,
+  onSubmit,
+}: {
+  productData: any
+  selectedColor: string
+  selectedSize: string
+  quantity: number
+  onQuantityChange: (change: number) => void
+  onSubmit: (e: React.FormEvent) => void
+}) => {
+  const [selectedProvince, setSelectedProvince] = useState("")
+  const [selectedCommune, setSelectedCommune] = useState("")
+  const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
+  const deliveryPrices = {
+    domicile: 400,
+    stopdesk: 200,
+  }
+
+  const productTotal = Number.parseInt(productData.priceAfter) * quantity
+  const shippingCost = selectedDeliveryMethod
+    ? deliveryPrices[selectedDeliveryMethod as keyof typeof deliveryPrices]
+    : 0
+  const grandTotal = productTotal + shippingCost
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+
+    // Simulate form submission
+    //await new Promise((resolve) => setTimeout(resolve, 2000))
+
+    setIsSubmitting(false)
+    onSubmit(e)
+  }
+
+  return (
+    <form onSubmit={handleFormSubmit} className="space-y-6">
+      {/* Order Summary */}
+      <div className="bg-stone-50 dark:bg-slate-800/50 p-4 rounded-xl">
+        <h4 className="font-semibold text-lg mb-3">Résumé de commande</h4>
+        <div className="space-y-2 text-sm">
+          <div className="flex justify-between">
+            <span>Produit:</span>
+            <span className="font-medium">{productData.productTitle }</span>
+          </div>
+          <div className="flex justify-between">
+            <span>Couleur:</span>
+            <span className="font-medium">{selectedColor}</span>
+          </div>
+          <div className="flex justify-between">
+            <span>Pointure:</span>
+            <span className="font-medium">{selectedSize}</span>
+          </div>
+          <div className="flex justify-between">
+            <span>Quantité:</span>
+            <span className="font-medium">{quantity}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Customer Information */}
+      <div className="space-y-4">
+        <h4 className="font-semibold text-lg">Informations personnelles</h4>
+
+        <div>
+          <Label htmlFor="name" className="text-sm font-semibold mb-2 block">
+            Nom <span className="text-red-500">*</span>
+          </Label>
+          <div className="flex">
+            <div className="bg-stone-100 dark:bg-slate-700 px-4 py-3 border border-r-0 border-stone-200 dark:border-stone-600 rounded-r-xl">
+              <LucideIcons.User className="w-5 h-5 text-gray-600 dark:text-stone-400" />
+            </div>
+            <Input id="name" className="rounded-l-xl border-l-0 focus:ring-rose-500 focus:border-rose-500" required />
+          </div>
+        </div>
+
+        <div>
+          <Label htmlFor="phone" className="text-sm font-semibold mb-2 block">
+            Téléphone <span className="text-red-500">*</span>
+          </Label>
+          <div className="flex">
+            <div className="bg-stone-100 dark:bg-slate-700 px-4 py-3 border border-r-0 border-stone-200 dark:border-stone-600 rounded-r-xl">
+              <span className="text-gray-600 dark:text-stone-400">📞</span>
+            </div>
+            <Input
+              id="phone"
+              type="tel"
+              inputMode="tel"
+              pattern="[0-9]*"
+              className="rounded-l-xl border-l-0 focus:ring-rose-500 focus:border-rose-500"
+              required
+            />
+          </div>
+        </div>
+
+        <div>
+          <Label htmlFor="wilayaa" className="text-sm font-semibold mb-2 block">
+            Wilaya <span className="text-red-500">*</span>
+          </Label>
+          <Select
+            value={selectedProvince.toString()}
+            onValueChange={(value) => {
+              setSelectedProvince(value)
+              setSelectedCommune("")
+            }}
+            required
+          >
+            <SelectTrigger className="w-full focus:ring-rose-500 focus:border-rose-500">
+              <div className="flex items-center gap-2">
+                <span className="text-gray-600 dark:text-stone-400">📍</span>
+                <SelectValue placeholder="Sélectionner wilaya" />
+              </div>
+            </SelectTrigger>
+            <SelectContent>
+              {wilayass.map((wilaya: any) => (
+                <SelectItem key={wilaya.id} value={wilaya.id.toString()}>
+                  {wilaya.id} - {wilaya.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div>
+          <Label htmlFor="commune" className="text-sm font-semibold mb-2 block">
+            Commune <span className="text-red-500">*</span>
+          </Label>
+          <Select value={selectedCommune} onValueChange={setSelectedCommune} disabled={!selectedProvince} required>
+            <SelectTrigger className="w-full focus:ring-rose-500 focus:border-rose-500">
+              <SelectValue placeholder="Sélectionner commune" />
+            </SelectTrigger>
+            <SelectContent>
+              {comuness
+                .filter((commune) => commune.wilaya_id.toString() === selectedProvince)
+                .map((commune) => (
+                  <SelectItem key={commune.id} value={commune.name}>
+                    {commune.name}
+                  </SelectItem>
+                ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {/* Delivery Method */}
+      <div className="space-y-4">
+        <Label className="text-sm font-semibold block">
+          Type de livraison <span className="text-red-500">*</span>
+        </Label>
+        <RadioGroup
+          value={selectedDeliveryMethod || ""}
+          onValueChange={setSelectedDeliveryMethod}
+          className="space-y-3"
+          required
+        >
+          {[
+            {
+              id: "domicile",
+              name: "À domicile",
+              description: "Livraison à votre adresse",
+              cost: 400,
+            },
+            {
+              id: "stopdesk",
+              name: "StopDesk",
+              description: "Point de retrait",
+              cost: 200,
+            },
+          ].map((method: any) => (
+            <div
+              key={method.id}
+              className="flex items-center space-x-3 p-4 border-2 border-stone-200 dark:border-stone-700 rounded-xl hover:bg-stone-50 dark:hover:bg-slate-700/50 transition-colors"
+            >
+              <RadioGroupItem value={method.id} id={method.id} className="text-rose-500" />
+              <Label htmlFor={method.id} className="text-sm font-medium cursor-pointer flex-1">
+                <span className="font-semibold text-gray-800 dark:text-white">{method.name}</span> -{" "}
+                {method.description}
+                <span className="block text-xs text-gray-500 dark:text-stone-400 mt-1">
+                  +DZ {deliveryPrices[method.id as keyof typeof deliveryPrices] || "0.00"}
+                </span>
+              </Label>
+            </div>
+          ))}
+        </RadioGroup>
+      </div>
+
+      {/* Price Summary */}
+      <div className="p-4 bg-stone-100 dark:bg-slate-800 rounded-xl">
+        <div className="space-y-3">
+          <div className="flex justify-between text-sm">
+            <span className="text-gray-600 dark:text-stone-300">Prix d'article</span>
+            <span className="font-semibold text-gray-900 dark:text-white">DZ {productTotal}</span>
+          </div>
+          <div className="flex justify-between text-sm">
+            <span className="text-gray-600 dark:text-stone-300">Frais de livraison</span>
+            <span className="font-semibold text-gray-900 dark:text-white">DZ {shippingCost}</span>
+          </div>
+          <div className="flex justify-between font-bold text-lg border-t pt-3 border-gray-200 dark:border-stone-700">
+            <span className="text-gray-900 dark:text-white">Total</span>
+            <span className="text-rose-600 dark:text-rose-400">DZ {grandTotal}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Submit Button */}
+      <Button
+        type="submit"
+        disabled={isSubmitting}
+        className="w-full bg-slate-800 hover:bg-slate-900 dark:bg-rose-600 dark:hover:bg-rose-700 text-white py-4 text-lg font-bold rounded-xl shadow-lg transform hover:scale-105 transition-all duration-300"
+      >
+        {isSubmitting ? (
+          <>
+            <LucideIcons.Loader2 className="w-5 h-5 mr-2 animate-spin" />
+            Traitement...
+          </>
+        ) : (
+          <>
+            <LucideIcons.ShoppingCart className="w-5 h-5 mr-2" />
+            Confirmer la commande - DZ {grandTotal}
+          </>
+        )}
+      </Button>
+    </form>
+  )
+}
 export default function ProductPage() {
   const { productData, loading, error } = useProduct()
   const thumbnailContainerRef = useRef(null)
@@ -15810,6 +16042,8 @@ export default function ProductPage() {
    const [isSubmitting, setIsSubmitting] = useState(false)
   const [quantity, setQuantity] = useState(1)
   const [deliveryPrices, setDeliveryPrices] = useState<{ [key: string]: number }>({});
+  const [isOrderSheetOpen, setIsOrderSheetOpen] = useState(false)
+
   const handleQuantityChange = (delta: number) => {
     setQuantity((prev) => Math.max(1, prev + delta))
   }
@@ -16042,11 +16276,11 @@ if (typeof window !== "undefined") {
       thumbnailContainerRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" })
     }
   }
+
   return (
     <div className="min-h-screen bg-stone-50 dark:bg-slate-900 text-slate-800 dark:text-stone-300">
       <CountdownBanner />
-
-      <main className="container mx-auto px-4 py-12" id="order-section">
+      <main className="container mx-auto px-4 py-12">
         <div className="grid lg:grid-cols-2 gap-x-12 gap-y-8 max-w-7xl mx-auto">
           {/* Product Images */}
           <div className="space-y-6 lg:order-1">
@@ -16074,70 +16308,64 @@ if (typeof window !== "undefined") {
                 <LucideIcons.Heart className={`w-5 h-5 ${isLiked ? "fill-current" : ""}`} />
               </Button>
             </div>
-                          <div className="relative">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="icon"
-                  className="absolute left-0 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full bg-white/80 hover:bg-white dark:bg-slate-800/80 dark:hover:bg-slate-700 shadow-md"
-                  onClick={() => handleThumbnailScroll("left")}
-                >
-                  <LucideIcons.ChevronLeft className="h-4 w-4" />
-                </Button>
-                <div ref={thumbnailContainerRef} className="flex overflow-x-auto gap-3 py-2 px-12 scrollbar-hide">
-              {productData.colorImages.map((thumbnail: string, index: number) => (
-                    <div
-                      key={index}
-                      className="aspect-square w-1/4 flex-shrink-0 bg-white dark:bg-slate-800 rounded-xl overflow-hidden cursor-pointer shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105"
-                    onClick={() => handleImageZoom(thumbnail.imageUrl || "/placeholder.svg")}
-                    >
-                      <Image
-                        src={thumbnail.imageUrl || "/placeholder.svg"}
-                        alt={`${selectedColor} variant ${index + 1}`}
-                        width={150}
-                        height={150}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  ))}
-                </div>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="icon"
-                  className="absolute right-0 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full bg-white/80 hover:bg-white dark:bg-slate-800/80 dark:hover:bg-slate-700 shadow-md"
-                  onClick={() => handleThumbnailScroll("right")}
-                >
-                  <LucideIcons.ChevronRight className="h-4 w-4" />
-                </Button>
-              </div>
 
+            <div className="relative">
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                className="absolute left-0 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full bg-white/80 hover:bg-white dark:bg-slate-800/80 dark:hover:bg-slate-700 shadow-md"
+                onClick={() => handleThumbnailScroll("left")}
+              >
+                <LucideIcons.ChevronLeft className="h-4 w-4" />
+              </Button>
+              <div ref={thumbnailContainerRef} className="flex overflow-x-auto gap-3 py-2 px-12 scrollbar-hide">
+                {productData.colorImages.map((thumbnail: any, index: number) => (
+                  <div
+                    key={index}
+                    className="aspect-square w-1/4 flex-shrink-0 bg-white dark:bg-slate-800 rounded-xl overflow-hidden cursor-pointer shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+                    onClick={() => handleImageZoom(thumbnail.imageUrl || "/placeholder.svg")}
+                  >
+                    <Image
+                      src={thumbnail.imageUrl || "/placeholder.svg"}
+                      alt={`${selectedColor} variant ${index + 1}`}
+                      width={150}
+                      height={150}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ))}
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                className="absolute right-0 top-1/2 -translate-y-1/2 z-10 h-8 w-8 rounded-full bg-white/80 hover:bg-white dark:bg-slate-800/80 dark:hover:bg-slate-700 shadow-md"
+                onClick={() => handleThumbnailScroll("right")}
+              >
+                <LucideIcons.ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
 
           {/* Product Details */}
           <div className="flex flex-col gap-8 lg:order-2">
             <div className="flex items-center gap-4 p-4 bg-stone-100 dark:bg-slate-800 rounded-xl order-3 lg:order-2">
               <span className="text-lg text-gray-500 dark:text-stone-400 line-through">
-                {"DZ"} {productData.priceBefore}
+                DZ {productData.priceBefore}
               </span>
-              <span className="text-3xl font-bold text-gray-900 dark:text-white">
-               {"DZ"}  {productData.priceAfter}
-              </span>
-           
-     <Badge className="inline-flex items-center whitespace-nowrap bg-rose-500 text-white px-3 py-1 text-sm">
-  {"En vente"}
-</Badge>
-           
+              <span className="text-3xl font-bold text-gray-900 dark:text-white">DZ {productData.priceAfter}</span>
+              <Badge className="inline-flex items-center whitespace-nowrap bg-rose-500 text-white px-3 py-1 text-sm">
+                En vente
+              </Badge>
             </div>
 
             <div className="space-y-4 order-4 lg:order-1">
               <p className="text-sm text-rose-600 dark:text-rose-400 uppercase tracking-wider font-semibold">
                 {productData.boutiqueName}
               </p>
+              <h1 className="text-4xl font-bold text-gray-900 dark:text-white leading-tight">{productData.title}</h1>
               <h1 className="text-4xl font-bold text-gray-900 dark:text-white leading-tight">
-                {productData.title}
-              </h1>
-                    <h1 className="text-4xl font-bold text-gray-900 dark:text-white leading-tight">
                 {productData.productTitle}
               </h1>
               <p className="text-gray-600 dark:text-stone-300 text-lg leading-relaxed hidden md:block">
@@ -16145,48 +16373,45 @@ if (typeof window !== "undefined") {
                 veut pas choisir entre style et confort.
               </p>
             </div>
-                         <div className="space-y-4 order-6 lg:order-6">
-                <Label className="text-lg font-semibold text-gray-900 dark:text-white">
-                  {"Quantité"}
-                </Label>
-                <div className="flex items-center border-2 border-stone-200 dark:border-stone-700 rounded-xl w-40 overflow-hidden">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-full rounded-none"
-                    onClick={() => handleQuantityChange(-1)}
-                  >
-                    -
-                  </Button>
-                  <Input
-                    type="number"
-                    value={quantity}
-                    className="border-0 bg-transparent text-center focus-visible:ring-0 font-semibold text-lg w-full"
-                    readOnly
-                  />
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-full rounded-none"
-                    onClick={() => handleQuantityChange(1)}
-                  >
-                    +
-                  </Button>
-                </div>
+
+            <div className="space-y-4 order-6 lg:order-6">
+              <Label className="text-lg font-semibold text-gray-900 dark:text-white">Quantité</Label>
+              <div className="flex items-center border-2 border-stone-200 dark:border-stone-700 rounded-xl w-40 overflow-hidden">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-full rounded-none"
+                  onClick={() => handleQuantityChange(-1)}
+                >
+                  -
+                </Button>
+                <Input
+                  type="number"
+                  value={quantity}
+                  className="border-0 bg-transparent text-center focus-visible:ring-0 font-semibold text-lg w-full"
+                  readOnly
+                />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-full rounded-none"
+                  onClick={() => handleQuantityChange(1)}
+                >
+                  +
+                </Button>
               </div>
+            </div>
+
             <div className="space-y-4 order-1 lg:order-5">
-              
-              <Label className="text-lg font-semibold text-gray-900 dark:text-white">
-                {"Couleur"}
-              </Label>
+              <Label className="text-lg font-semibold text-gray-900 dark:text-white">Couleur</Label>
               <div className="flex flex-wrap gap-3">
-                {productData.colorImages.map((color: any,index) => (
+                {productData.colorImages.map((color: any, index) => (
                   <Button
-                    key={color.color }
+                    key={color.color}
                     variant={color.color === selectedColor ? "default" : "outline"}
                     size="sm"
                     className={`rounded-full px-4 py-2 transition-all duration-300 transform hover:scale-105 ${
-                      color.name === selectedColor
+                      color.color === selectedColor
                         ? "bg-slate-800 text-white border-slate-800 dark:bg-rose-600 dark:border-rose-600 shadow-lg"
                         : "border-2 border-stone-300 dark:border-stone-600 hover:border-rose-400 dark:hover:border-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20"
                     }`}
@@ -16199,13 +16424,11 @@ if (typeof window !== "undefined") {
             </div>
 
             <div className="space-y-4 order-2 lg:order-4">
-              <Label className="text-lg font-semibold text-gray-900 dark:text-white">
-                {"Pointure"}
-              </Label>
-                   <div className="flex flex-wrap gap-3">
-                {["37","38","39","40","41"].map((size: string) => (
-         <Button
-                    key={size }
+              <Label className="text-lg font-semibold text-gray-900 dark:text-white">Pointure</Label>
+              <div className="flex flex-wrap gap-3">
+                {["37", "38", "39", "40", "41"].map((size: string) => (
+                  <Button
+                    key={size}
                     variant={size === selectedSize ? "default" : "outline"}
                     size="sm"
                     className={`rounded-full px-4 py-2 transition-all duration-300 transform hover:scale-105 ${
@@ -16218,7 +16441,7 @@ if (typeof window !== "undefined") {
                     {size}
                   </Button>
                 ))}
-      </div>
+              </div>
             </div>
 
             <div className="flex items-center justify-between order-5 lg:order-3">
@@ -16233,181 +16456,38 @@ if (typeof window !== "undefined") {
               <SizeGuide />
             </div>
 
-          </div>
-        </div>
-<form onSubmit={handleFormSubmit}>
-  <section className="mt-20 max-w-4xl mx-auto">
-    <div className="bg-white dark:bg-slate-800/50 p-8 rounded-3xl shadow-xl border border-gray-100 dark:border-slate-800">
-      <h3 className="text-2xl font-bold text-center text-gray-900 dark:text-white mb-8 flex items-center justify-center gap-2">
-        <LucideIcons.Truck className="w-6 h-6 text-rose-500" />
-        {"Type de livraison"} (نوع التوصيل)
-      </h3>
-      <div className="grid md:grid-cols-2 gap-6">
-        <div>
-          <Label htmlFor="name" className="text-sm font-semibold text-gray-700 dark:text-stone-300 mb-2 block">
-            {"Nom"} (الاسم) <span className="text-red-500">*</span>
-          </Label>
-          <div className="flex">
-            <div className="bg-stone-100 dark:bg-slate-700 px-4 py-3 border border-r-0 border-stone-200 dark:border-stone-600 rounded-r-xl">
-              <LucideIcons.User className="w-5 h-5 text-gray-600 dark:text-stone-400" />
+            {/* Order Now Button */}
+            <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50">
+        <Sheet open={isOrderSheetOpen} onOpenChange={setIsOrderSheetOpen}>
+          <SheetTrigger asChild>
+            <Button className="relative bg-gradient-to-r from-slate-800 to-slate-900 hover:from-slate-900 hover:to-black dark:from-rose-600 dark:to-rose-700 dark:hover:from-rose-700 dark:hover:to-rose-800 text-white px-8 py-4 text-lg font-bold rounded-full shadow-2xl transform transition-all duration-300 animate-bounce-gentle hover:scale-110 hover:shadow-3xl border-2 border-white/20">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer rounded-full"></div>
+              <LucideIcons.ShoppingCart className="w-6 h-6 mr-3 animate-pulse" />
+              <span className="relative z-10">Commander maintenant</span>
+              <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full animate-ping"></div>
+              <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full"></div>
+            </Button>
+          </SheetTrigger>
+          <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
+            <SheetHeader>
+              <SheetTitle>Finaliser votre commande</SheetTitle>
+              <SheetDescription>Remplissez vos informations pour confirmer votre commande</SheetDescription>
+            </SheetHeader>
+            <div className="mt-6">
+              <OrderSheet
+                productData={productData}
+                selectedColor={selectedColor}
+                selectedSize={selectedSize}
+                quantity={quantity}
+                onQuantityChange={handleQuantityChange}
+                onSubmit={handleFormSubmit}
+              />
             </div>
-            <Input
-              id="name"
-              className="rounded-l-xl border-l-0 focus:ring-rose-500 focus:border-rose-500"
-              required
-            />
-          </div>
-        </div>
-        <div>
-          <Label htmlFor="phone" className="text-sm font-semibold text-gray-700 dark:text-stone-300 mb-2 block">
-            {"Téléphone"} (رقم الهاتف) <span className="text-red-500">*</span>
-          </Label>
-          <div className="flex">
-            <div className="bg-stone-100 dark:bg-slate-700 px-4 py-3 border border-r-0 border-stone-200 dark:border-stone-600 rounded-r-xl">
-              <span className="text-gray-600 dark:text-stone-400">📞</span>
-            </div>
-            <Input
-              id="phone"
-              type="tel"
-              inputMode="tel"
-              pattern="[0-9]*"
-              className="rounded-l-xl border-l-0 focus:ring-rose-500 focus:border-rose-500"
-              required
-            />
-          </div>
-        </div>
-        <div>
-          <Label htmlFor="wilayaa" className="text-sm font-semibold text-gray-700 dark:text-stone-300 mb-2 block">
-            {"Wilaya"} (الولاية) <span className="text-red-500">*</span>
-          </Label>
-          <Select
-            value={selectedProvince.toString()}
-            onValueChange={(value) => {
-              setSelectedProvince(value)
-              setSelectedCommune("")
-            }}
-            required
-          >
-            <SelectTrigger className="w-full focus:ring-rose-500 focus:border-rose-500">
-              <div className="flex items-center gap-2">
-                <span className="text-gray-600 dark:text-stone-400">📍</span>
-                <SelectValue placeholder={"Wilaya"} />
-              </div>
-            </SelectTrigger>
-            <SelectContent>
-              {wilayass.map((wilaya: any) => (
-                <SelectItem key={wilaya.id} value={wilaya.id.toString()}>
-                  {wilaya.id} - {wilaya.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div>
-          <Label htmlFor="commune" className="text-sm font-semibold text-gray-700 dark:text-stone-300 mb-2 block">
-            {"Commune"} (البلدية) <span className="text-red-500">*</span>
-          </Label>
-          <Select
-            value={selectedCommune}
-            onValueChange={setSelectedCommune}
-            disabled={!selectedProvince}
-            required
-          >
-            <SelectTrigger className="w-full focus:ring-rose-500 focus:border-rose-500">
-              <SelectValue placeholder={"Commune"} />
-            </SelectTrigger>
-            <SelectContent>
-              {comuness
-                .filter((commune) => commune.wilaya_id.toString() === selectedProvince)
-                .map((commune) => (
-                  <SelectItem key={commune.id} value={commune.name}>
-                    {commune.name}
-                  </SelectItem>
-                ))}
-            </SelectContent>
-          </Select>
-        </div>
+          </SheetContent>
+        </Sheet>
       </div>
-
-      <div className="mt-6">
-        <Label className="text-sm font-semibold text-gray-700 dark:text-stone-300 mb-4 block">
-          {"Type de livraison"} (نوع التوصيل) <span className="text-red-500">*</span>
-        </Label>
-        <RadioGroup
-          value={selectedDeliveryMethod || ""}
-          onValueChange={setSelectedDeliveryMethod}
-          className="space-y-3"
-          required
-        >
-          {[
-            {
-              id: "domicile",
-              name: "À domicile",
-              description: "Livraison à votre adresse",
-              cost: 400,
-            },
-            {
-              id: "stopdesk",
-              name: "StopDesk",
-              description: "Point de retrait",
-              cost: 200,
-              info: "Sélectionnez un point de retrait StopDesk près de chez vous après validation de la commande.",
-            },
-          ].map((method: any) => (
-            <div
-              key={method.id}
-              className="flex items-center space-x-3 p-4 border-2 border-stone-200 dark:border-stone-700 rounded-xl hover:bg-stone-50 dark:hover:bg-slate-700/50 transition-colors"
-            >
-              <RadioGroupItem value={method.id} id={method.id} className="text-rose-500" />
-              <Label htmlFor={method.id} className="text-sm font-medium cursor-pointer flex-1">
-                <span className="font-semibold text-gray-800 dark:text-white">{method.name}</span> - {method.description}
-                <span className="block text-xs text-gray-500 dark:text-stone-400 mt-1">
-                  +{"DZ"} {deliveryPrices[method.id]|| "0.00"}
-                </span>
-              </Label>
-            </div>
-          ))}
-        </RadioGroup>
-      </div>
-
-      <div className="mt-8 p-6 bg-stone-100 dark:bg-slate-800 rounded-xl">
-        <div className="space-y-3">
-          <div className="flex justify-between text-sm">
-            <span className="text-gray-600 dark:text-stone-300">{"Prix d'article"} (سعر المنتج)</span>
-            <span className="font-semibold text-gray-900 dark:text-white">
-              {"DZ"} {productTotal}
-            </span>
-          </div>
-          <div className="flex justify-between text-sm">
-            <span className="text-gray-600 dark:text-stone-300">{"Frais de livraison"} (سعر التوصيل)</span>
-            <span className="font-semibold text-gray-900 dark:text-white">
-              {"DZ"} {shippingCost}
-            </span>
-          </div>
-          <div className="flex justify-between font-bold text-lg border-t pt-3 border-gray-200 dark:border-stone-700">
-            <span className="text-gray-900 dark:text-white">{"Total"} (السعر الإجمالي)</span>
-            <span className="text-rose-600 dark:text-rose-400">
-              {"DZ"} {grandTotal}
-            </span>
           </div>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <div className="fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-gray-200 dark:border-slate-800 p-4 z-50">
-    <div className="max-w-md mx-auto">
-      <Button
-        type="submit"
-         disabled={isSubmitting}
-        className="w-full bg-slate-800 hover:bg-slate-900 dark:bg-rose-600 dark:hover:bg-rose-700 text-white py-4 text-lg font-bold rounded-xl shadow-lg transform hover:scale-105 transition-all duration-300"
-      >
-        <LucideIcons.ShoppingCart className="w-5 h-5 ml-2" />
-        {"اطلب الآن - السعر الإجمالي"} {"DZ"} {grandTotal}
-      </Button>
-    </div>
-  </div>
-</form>
 
         <section className="mt-20 py-20 bg-gradient-to-br from-stone-100 to-rose-50 dark:from-slate-800 dark:to-rose-900/40 rounded-3xl overflow-hidden">
           <div className="max-w-6xl mx-auto px-6">
@@ -16459,11 +16539,10 @@ if (typeof window !== "undefined") {
             </div>
           </div>
         </section>
+
         <section className="mt-20 py-16">
           <div className="max-w-6xl mx-auto px-6">
-            <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-12">
-              Avis de nos clientes 
-            </h2>
+            <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-12">Avis de nos clientes</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {productData.testimonials
                 .filter((testimonial: any) => testimonial.reviewImage)
@@ -16487,6 +16566,7 @@ if (typeof window !== "undefined") {
             </div>
           </div>
         </section>
+
         <Faq />
 
         {isZoomed && (
@@ -16516,10 +16596,9 @@ if (typeof window !== "undefined") {
         )}
       </main>
 
-      <Footer facebookUrl={productData.facebookUrl} instagramUrl={productData.instagramUrl}/>
+      <Footer facebookUrl={productData.facebookUrl} instagramUrl={productData.instagramUrl} />
       <WhatsAppButton />
       <ThankYouModal isOpen={showThankYou} onClose={() => setShowThankYou(false)} />
-
       <div className="h-24"></div>
 
       <style jsx>{`
