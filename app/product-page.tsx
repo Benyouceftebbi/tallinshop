@@ -16289,8 +16289,13 @@ function generateReferenceFromDepots(depots) {
 }
 
 const router = useRouter();
+const [lastSubmitTime, setLastSubmitTime] = useState<number | null>(null);
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+      if (lastSubmitTime && Date.now() - lastSubmitTime < 40000) {
+    alert("يرجى الانتظار قليلاً قبل إعادة المحاولة.");
+    return;
+  }
      const isValid =
     name.trim() !== "" &&
     phone.trim() !== "" &&
@@ -16307,6 +16312,7 @@ const router = useRouter();
   }
 
         setIsSubmitting(true)
+          setLastSubmitTime(Date.now()); // 🔐 Set lock timestamp
   const form = e.currentTarget
   
 
@@ -16362,8 +16368,8 @@ const depots = enrichedArticles
 order.orderReference = generateReferenceFromDepots(depots);
 
 // 🔁 Save both raw and enriched orders
-await addDoc(collection(firestore, "Orders"), {...orderData,slug:productData.slug}); // Shopify raw order
-await addDoc(collection(firestore, "orders"), {...order,slug:productData.slug});     // enriched internal order
+//await addDoc(collection(firestore, "Orders"), {...orderData,slug:productData.slug}); // Shopify raw order
+//await addDoc(collection(firestore, "orders"), {...order,slug:productData.slug});     // enriched internal order
 if (typeof window !== "undefined") {
   if (window.fbq) {
     window.fbq("track", "Purchase", {
@@ -16614,6 +16620,7 @@ if (typeof window !== "undefined") {
         type="submit"
         onClick={handleFormSubmit}
         className="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-4 rounded-xl text-center text-base"
+        //disabled={isSubmitting || (lastSubmitTime && Date.now() - lastSubmitTime < 40000)}
       >
         CONFIRMER LA COMMANDE - DZ {grandTotal}
       </Button>
