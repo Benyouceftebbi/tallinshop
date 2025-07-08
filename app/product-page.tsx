@@ -16155,6 +16155,7 @@ export default function ProductPage() {
   const [name, setName] = useState("")
   const [phone, setPhone] = useState("")
 
+const [lastSubmitTime, setLastSubmitTime] = useState<number | null>(null);
   const handleQuantityChange = (delta: number) => {
     setQuantity((prev) => Math.max(1, prev + delta))
   }
@@ -16288,8 +16289,7 @@ function generateReferenceFromDepots(depots) {
   return `${prefix}-${randomStr}${timestamp}`;
 }
 
-const router = useRouter();
-const [lastSubmitTime, setLastSubmitTime] = useState<number | null>(null);
+
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
       if (lastSubmitTime && Date.now() - lastSubmitTime < 40000) {
