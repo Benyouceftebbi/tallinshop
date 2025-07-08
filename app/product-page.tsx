@@ -15801,6 +15801,20 @@ const OrderSheet = ({
   quantity,
   onQuantityChange,
   onSubmit,
+  deliveryPrices,
+  selectedProvince,
+  setSelectedProvince,
+  setSelectedColor,
+  setSelectedSize,
+  handleQuantityChange,
+  name,setName,
+  phone,setPhone,
+  selectedCommune,
+  setSelectedCommune,
+  selectedDeliveryMethod,
+  setSelectedDeliveryMethod,
+
+
 }: {
   productData: any
   selectedColor: string
@@ -15809,15 +15823,11 @@ const OrderSheet = ({
   onQuantityChange: (change: number) => void
   onSubmit: (e: React.FormEvent) => void
 }) => {
-  const [selectedProvince, setSelectedProvince] = useState("")
-  const [selectedCommune, setSelectedCommune] = useState("")
-  const [selectedDeliveryMethod, setSelectedDeliveryMethod] = useState("")
+
+
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const deliveryPrices = {
-    domicile: 400,
-    stopdesk: 200,
-  }
+
 
   const productTotal = Number.parseInt(productData.priceAfter) * quantity
   const shippingCost = selectedDeliveryMethod
@@ -15835,31 +15845,13 @@ const OrderSheet = ({
     setIsSubmitting(false)
     onSubmit(e)
   }
-
+  const [isImageZoomed, setIsImageZoomed] = useState(false)
+  const currentColorObj =
+  productData.colorImages.find((img: any) => img.color === selectedColor) || productData.colorImages[0]
   return (
     <form onSubmit={handleFormSubmit} className="space-y-6">
       {/* Order Summary */}
-      <div className="bg-stone-50 dark:bg-slate-800/50 p-4 rounded-xl">
-        <h4 className="font-semibold text-lg mb-3">Résumé de commande</h4>
-        <div className="space-y-2 text-sm">
-          <div className="flex justify-between">
-            <span>Produit:</span>
-            <span className="font-medium">{productData.productTitle }</span>
-          </div>
-          <div className="flex justify-between">
-            <span>Couleur:</span>
-            <span className="font-medium">{selectedColor}</span>
-          </div>
-          <div className="flex justify-between">
-            <span>Pointure:</span>
-            <span className="font-medium">{selectedSize}</span>
-          </div>
-          <div className="flex justify-between">
-            <span>Quantité:</span>
-            <span className="font-medium">{quantity}</span>
-          </div>
-        </div>
-      </div>
+
 
       {/* Customer Information */}
       <div className="space-y-4">
@@ -15870,10 +15862,9 @@ const OrderSheet = ({
             Nom <span className="text-red-500">*</span>
           </Label>
           <div className="flex">
-            <div className="bg-stone-100 dark:bg-slate-700 px-4 py-3 border border-r-0 border-stone-200 dark:border-stone-600 rounded-r-xl">
-              <LucideIcons.User className="w-5 h-5 text-gray-600 dark:text-stone-400" />
-            </div>
-            <Input id="name" className="rounded-l-xl border-l-0 focus:ring-rose-500 focus:border-rose-500" required />
+           
+            <Input id="name" className="rounded-l-xl border-l-0 focus:ring-rose-500 focus:border-rose-500" required     value={name}
+    onChange={(e) => setName(e.target.value)} />
           </div>
         </div>
 
@@ -15882,17 +15873,16 @@ const OrderSheet = ({
             Téléphone <span className="text-red-500">*</span>
           </Label>
           <div className="flex">
-            <div className="bg-stone-100 dark:bg-slate-700 px-4 py-3 border border-r-0 border-stone-200 dark:border-stone-600 rounded-r-xl">
-              <span className="text-gray-600 dark:text-stone-400">📞</span>
-            </div>
-            <Input
-              id="phone"
-              type="tel"
-              inputMode="tel"
-              pattern="[0-9]*"
-              className="rounded-l-xl border-l-0 focus:ring-rose-500 focus:border-rose-500"
-              required
-            />
+          <Input
+    id="phone"
+    type="tel"
+    inputMode="tel"
+    pattern="[0-9]*"
+    className="rounded-l-xl border-l-0 focus:ring-rose-500 focus:border-rose-500"
+    required
+    value={phone}
+    onChange={(e) => setPhone(e.target.value)}
+  />
           </div>
         </div>
 
@@ -15946,17 +15936,17 @@ const OrderSheet = ({
       </div>
 
       {/* Delivery Method */}
-      <div className="space-y-4">
-        <Label className="text-sm font-semibold block">
-          Type de livraison <span className="text-red-500">*</span>
+      <div className="mt-6">
+        <Label className="text-sm font-semibold text-gray-700 dark:text-stone-300 mb-4 block">
+          {"Type de livraison"} (نوع التوصيل) <span className="text-red-500">*</span>
         </Label>
-        <RadioGroup
-          value={selectedDeliveryMethod || ""}
-          onValueChange={setSelectedDeliveryMethod}
-          className="space-y-3"
-          required
-        >
-          {[
+        <Select  value={selectedDeliveryMethod || ""}
+          onValueChange={setSelectedDeliveryMethod}  required>
+            <SelectTrigger className="w-full focus:ring-rose-500 focus:border-rose-500">
+              <SelectValue placeholder="Sélectionner type de livraison" />
+            </SelectTrigger>
+            <SelectContent>
+            {[
             {
               id: "domicile",
               name: "À domicile",
@@ -15968,61 +15958,165 @@ const OrderSheet = ({
               name: "StopDesk",
               description: "Point de retrait",
               cost: 200,
+              info: "Sélectionnez un point de retrait StopDesk près de chez vous après validation de la commande.",
             },
           ].map((method: any) => (
-            <div
-              key={method.id}
-              className="flex items-center space-x-3 p-4 border-2 border-stone-200 dark:border-stone-700 rounded-xl hover:bg-stone-50 dark:hover:bg-slate-700/50 transition-colors"
-            >
-              <RadioGroupItem value={method.id} id={method.id} className="text-rose-500" />
-              <Label htmlFor={method.id} className="text-sm font-medium cursor-pointer flex-1">
-                <span className="font-semibold text-gray-800 dark:text-white">{method.name}</span> -{" "}
-                {method.description}
-                <span className="block text-xs text-gray-500 dark:text-stone-400 mt-1">
-                  +DZ {deliveryPrices[method.id as keyof typeof deliveryPrices] || "0.00"}
+                  <SelectItem value={method.id} id={method.id}  key={method.id}>
+                      <span className="font-semibold text-gray-800 dark:text-white">{method.name}</span> - {method.description}
+                <span className="block text-xs text-gray-800 dark:text-stone-400 mt-1">
+                  +{"DZ"} {deliveryPrices[method.id]|| "0.00"}
                 </span>
-              </Label>
-            </div>
-          ))}
-        </RadioGroup>
+                  </SelectItem>
+                ))}
+            </SelectContent>
+          </Select>
       </div>
+      <div className="bg-stone-50 dark:bg-slate-800/50 p-4 rounded-xl">
+        <h4 className="font-semibold text-lg mb-4">Résumé de commande</h4>
 
-      {/* Price Summary */}
-      <div className="p-4 bg-stone-100 dark:bg-slate-800 rounded-xl">
-        <div className="space-y-3">
-          <div className="flex justify-between text-sm">
-            <span className="text-gray-600 dark:text-stone-300">Prix d'article</span>
-            <span className="font-semibold text-gray-900 dark:text-white">DZ {productTotal}</span>
+        <div className="flex gap-4 mb-4">
+          {/* Product Details - Left Side */}
+          <div className="flex-1 space-y-3">
+
+
+            {/* Color Selection Dropdown */}
+            <div>
+              <Label className="text-sm font-semibold mb-2 block">Couleur:</Label>
+              <Select value={selectedColor} onValueChange={setSelectedColor}>
+                <SelectTrigger className="w-full h-9 text-sm">
+                  <SelectValue placeholder="Sélectionner couleur" />
+                </SelectTrigger>
+                <SelectContent>
+                  {productData.colorImages.map((color: any) => (
+                    <SelectItem key={color.color} value={color.color}>
+                      {color.color}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Size Selection Dropdown */}
+            <div>
+              <Label className="text-sm font-semibold mb-2 block">Pointure:</Label>
+              <Select value={selectedSize} onValueChange={setSelectedSize}>
+                <SelectTrigger className="w-full h-9 text-sm">
+                  <SelectValue placeholder="Sélectionner pointure" />
+                </SelectTrigger>
+                <SelectContent>
+                  {["37", "38", "39", "40", "41"].map((size: string) => (
+                    <SelectItem key={size} value={size}>
+                      {size}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Quantity Selection */}
+            <div>
+              <Label className="text-sm font-semibold mb-2 block">Quantité:</Label>
+              <div className="flex items-center border border-stone-200 dark:border-stone-700 rounded-md w-24 overflow-hidden">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="h-7 w-7 rounded-none border-0 hover:bg-stone-100 dark:hover:bg-slate-700 p-0"
+                  onClick={() => handleQuantityChange(-1)}
+                >
+                  <LucideIcons.Minus className="w-3 h-3" />
+                </Button>
+                <div className="flex-1 text-center text-sm font-semibold py-1 px-1">{quantity}</div>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="h-7 w-7 rounded-none border-0 hover:bg-stone-100 dark:hover:bg-slate-700 p-0"
+                  onClick={() => handleQuantityChange(1)}
+                >
+                  <LucideIcons.Plus className="w-3 h-3" />
+                </Button>
+              </div>
+            </div>
           </div>
-          <div className="flex justify-between text-sm">
-            <span className="text-gray-600 dark:text-stone-300">Frais de livraison</span>
-            <span className="font-semibold text-gray-900 dark:text-white">DZ {shippingCost}</span>
-          </div>
-          <div className="flex justify-between font-bold text-lg border-t pt-3 border-gray-200 dark:border-stone-700">
-            <span className="text-gray-900 dark:text-white">Total</span>
-            <span className="text-rose-600 dark:text-rose-400">DZ {grandTotal}</span>
+
+          {/* Product Image - Right Side */}
+          <div className="flex-shrink-0">
+            <div
+              className="w-20 h-20 bg-white dark:bg-slate-700 rounded-lg overflow-hidden cursor-zoom-in shadow-md hover:shadow-lg transition-all duration-300 group"
+              onClick={() => setIsImageZoomed(true)}
+            >
+              <Image
+                src={currentColorObj?.imageUrl || "/placeholder.svg"}
+                alt={`${productData.title} - ${selectedColor}`}
+                width={80}
+                height={80}
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+              />
+            </div>
           </div>
         </div>
       </div>
+      <div className="fixed bottom-0 left-0 w-full px-4 pb-4 z-50 bg-white dark:bg-slate-800 shadow-[0_-2px_10px_rgba(0,0,0,0.1)]">
+  {/* Horizontal Summary */}
+  <div className="flex justify-between text-sm font-semibold text-gray-700 dark:text-white border-b pb-2 mb-2">
+    <div className="flex flex-col items-start w-1/3">
+      <span className="text-xs text-gray-500">Prix du Produit</span>
+      <span className="text-blue-700 dark:text-blue-400">{productTotal} DZD</span>
+    </div>
+    <div className="flex flex-col items-center w-1/3">
+      <span className="text-xs text-gray-500">Tarifs de livraison</span>
+      <span className="text-blue-700 dark:text-blue-400">
+        {shippingCost ? `${shippingCost} DZD` : "N/A"}
+      </span>
+    </div>
+    <div className="flex flex-col items-end w-1/3">
+      <span className="text-xs font-bold text-red-600">TOTAL (DZD)</span>
+      <span className="text-blue-700 dark:text-blue-400">{grandTotal} DZD</span>
+    </div>
+  </div>
 
-      {/* Submit Button */}
-      <Button
-        type="submit"
-        disabled={isSubmitting}
-        className="w-full bg-slate-800 hover:bg-slate-900 dark:bg-rose-600 dark:hover:bg-rose-700 text-white py-4 text-lg font-bold rounded-xl shadow-lg transform hover:scale-105 transition-all duration-300"
-      >
-        {isSubmitting ? (
-          <>
-            <LucideIcons.Loader2 className="w-5 h-5 mr-2 animate-spin" />
-            Traitement...
-          </>
-        ) : (
-          <>
-            <LucideIcons.ShoppingCart className="w-5 h-5 mr-2" />
-            Confirmer la commande - DZ {grandTotal}
-          </>
-        )}
-      </Button>
+  {/* Confirm Button */}
+  <Button
+    type="submit"
+    disabled={isSubmitting}
+    className="w-full bg-pink-500 hover:bg-pink-600 text-white py-3 text-sm font-bold rounded-lg transition-all duration-300"
+  >
+    {isSubmitting ? (
+      <>
+        <LucideIcons.Loader2 className="w-4 h-4 mr-2 animate-spin" />
+        Traitement...
+      </>
+    ) : (
+      <>CONFIRMER LA COMMANDE</>
+    )}
+  </Button>
+</div>
+{isImageZoomed && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-90 z-[100] flex items-center justify-center p-4"
+          onClick={() => setIsImageZoomed(false)}
+        >
+          <div className="relative max-w-2xl max-h-full">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute -top-12 right-0 text-white hover:bg-white/20 z-10"
+              onClick={() => setIsImageZoomed(false)}
+            >
+              <LucideIcons.X className="w-6 h-6" />
+            </Button>
+            <Image
+              src={currentColorObj?.imageUrl || "/placeholder.svg"}
+              alt={`${productData.title} - ${selectedColor}`}
+              width={600}
+              height={600}
+              className="max-w-full max-h-[80vh] object-contain rounded-lg"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+        </div>
+      )}
     </form>
   )
 }
@@ -16043,6 +16137,8 @@ export default function ProductPage() {
   const [quantity, setQuantity] = useState(1)
   const [deliveryPrices, setDeliveryPrices] = useState<{ [key: string]: number }>({});
   const [isOrderSheetOpen, setIsOrderSheetOpen] = useState(false)
+  const [name, setName] = useState("")
+  const [phone, setPhone] = useState("")
 
   const handleQuantityChange = (delta: number) => {
     setQuantity((prev) => Math.max(1, prev + delta))
@@ -16182,8 +16278,7 @@ const router = useRouter();
     e.preventDefault()
         setIsSubmitting(true)
   const form = e.currentTarget
-  const name = (form.elements.namedItem("name") as HTMLInputElement)?.value
-  const phone = (form.elements.namedItem("phone") as HTMLInputElement)?.value
+  
 
 try {
   const orderData = convertShopifyOrderToCustomFormat({ name, phone })
@@ -16468,22 +16563,57 @@ if (typeof window !== "undefined") {
               <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full"></div>
             </Button>
           </SheetTrigger>
-          <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
-            <SheetHeader>
-              <SheetTitle>Finaliser votre commande</SheetTitle>
-              <SheetDescription>Remplissez vos informations pour confirmer votre commande</SheetDescription>
-            </SheetHeader>
-            <div className="mt-6">
-              <OrderSheet
-                productData={productData}
-                selectedColor={selectedColor}
-                selectedSize={selectedSize}
-                quantity={quantity}
-                onQuantityChange={handleQuantityChange}
-                onSubmit={handleFormSubmit}
-              />
-            </div>
-          </SheetContent>
+          <SheetContent className="w-full sm:max-w-lg p-0">
+  <div className="relative flex flex-col h-full">
+    {/* Scrollable main content */}
+    <div className="overflow-y-auto flex-1 px-4 pb-36">
+      <SheetHeader>
+        <SheetTitle>Finaliser votre commande</SheetTitle>
+        <SheetDescription>
+          Remplissez vos informations pour confirmer votre commande
+        </SheetDescription>
+      </SheetHeader>
+
+      <div className="mt-6">
+        <OrderSheet
+          productData={productData}
+          selectedColor={selectedColor}
+          selectedSize={selectedSize}
+          quantity={quantity}
+          onQuantityChange={handleQuantityChange}
+          onSubmit={handleFormSubmit}
+          deliveryPrices={deliveryPrices}
+          selectedProvince={selectedProvince}
+          setSelectedProvince={setSelectedProvince}
+          selectedCommune={selectedCommune}
+          setSelectedCommune={setSelectedCommune}
+          setSelectedColor={setSelectedColor}
+          setSelectedSize={setSelectedSize}
+          handleQuantityChange={handleQuantityChange}
+          name={name}
+          setName={setName}
+          phone={phone}
+          setPhone={setPhone}
+          selectedDeliveryMethod={selectedDeliveryMethod}
+          setSelectedDeliveryMethod={setSelectedDeliveryMethod}
+        />
+      </div>
+
+   
+    </div>
+
+    {/* Fixed bottom bar */}
+    <div className="fixed bottom-0 left-0 w-full px-4 pb-5 bg-white dark:bg-slate-900 shadow-md z-50">
+      <Button
+        type="submit"
+        onClick={handleFormSubmit}
+        className="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-4 rounded-xl text-center text-base"
+      >
+        CONFIRMER LA COMMANDE - DZ {grandTotal}
+      </Button>
+    </div>
+  </div>
+</SheetContent>
         </Sheet>
       </div>
           </div>
