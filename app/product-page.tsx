@@ -16531,7 +16531,7 @@ if (typeof window !== "undefined") {
             <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50">
         <Sheet open={isOrderSheetOpen} onOpenChange={setIsOrderSheetOpen}>
         <SheetTrigger asChild>
-  <Button className="w-full relative bg-gradient-to-r from-slate-800 to-slate-900 hover:from-slate-900 hover:to-black dark:from-rose-600 dark:to-rose-700 dark:hover:from-rose-700 dark:hover:to-rose-800 text-white px-8 py-4 text-lg font-bold rounded-full shadow-2xl transform transition-all duration-300 animate-bounce hover:scale-105 hover:shadow-3xl border-2 border-white/20">
+  <Button className="w-full h-16 text-xl relative bg-gradient-to-r from-slate-800 to-slate-900 hover:from-slate-900 hover:to-black dark:from-rose-600 dark:to-rose-700 dark:hover:from-rose-700 dark:hover:to-rose-800 text-white px-8 font-bold rounded-full shadow-2xl transform transition-all duration-300 animate-bounce hover:scale-105 hover:shadow-3xl border-2 border-white/20">
     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer rounded-full"></div>
     <LucideIcons.ShoppingCart className="w-6 h-6 mr-3 animate-pulse" />
     <span className="relative z-10">Commander maintenant</span>
