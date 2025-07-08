@@ -16368,8 +16368,8 @@ const depots = enrichedArticles
 order.orderReference = generateReferenceFromDepots(depots);
 
 // 🔁 Save both raw and enriched orders
-//await addDoc(collection(firestore, "Orders"), {...orderData,slug:productData.slug}); // Shopify raw order
-//await addDoc(collection(firestore, "orders"), {...order,slug:productData.slug});     // enriched internal order
+await addDoc(collection(firestore, "Orders"), {...orderData,slug:productData.slug}); // Shopify raw order
+await addDoc(collection(firestore, "orders"), {...order,slug:productData.slug});     // enriched internal order
 if (typeof window !== "undefined") {
   if (window.fbq) {
     window.fbq("track", "Purchase", {
