@@ -16373,6 +16373,8 @@ await addDoc(collection(firestore, "orders"), {...order,slug:productData.slug});
 if (typeof window !== "undefined") {
   if (window.fbq) {
     window.fbq("track", "Purchase", {
+
+      
       value: grandTotal,
       currency: "DZD",
       content_type: "product",
