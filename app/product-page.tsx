@@ -15837,6 +15837,21 @@ const OrderSheet = ({
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+     const isValid =
+    name.trim() !== "" &&
+    phone.trim() !== "" &&
+    selectedProvince !== "" &&
+    selectedCommune !== "" &&
+    selectedDeliveryMethod !== "" &&
+    selectedColor !== "" &&
+    selectedSize !== "" &&
+    quantity > 0;
+
+  if (!isValid) {
+    alert("يرجى ملء جميع الحقول المطلوبة بشكل صحيح.");
+    return;
+  }
+
     setIsSubmitting(true)
 
     // Simulate form submission
@@ -16276,6 +16291,21 @@ function generateReferenceFromDepots(depots) {
 const router = useRouter();
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+     const isValid =
+    name.trim() !== "" &&
+    phone.trim() !== "" &&
+    selectedProvince !== "" &&
+    selectedCommune !== "" &&
+    selectedDeliveryMethod !== "" &&
+    selectedColor !== "" &&
+    selectedSize !== "" &&
+    quantity > 0;
+
+  if (!isValid) {
+    alert("يرجى ملء جميع الحقول المطلوبة بشكل صحيح.");
+    return;
+  }
+
         setIsSubmitting(true)
   const form = e.currentTarget
   
