@@ -15855,11 +15855,11 @@ const OrderSheet = ({
 
       {/* Customer Information */}
       <div className="space-y-4">
-        <h4 className="font-semibold text-lg">Informations personnelles</h4>
+      <h4 className="font-semibold text-lg">المعلومات الشخصية</h4>
 
         <div>
           <Label htmlFor="name" className="text-sm font-semibold mb-2 block">
-            Nom <span className="text-red-500">*</span>
+            Nom /الاسم الكامل<span className="text-red-500">*</span>
           </Label>
           <div className="flex">
            
@@ -15870,7 +15870,7 @@ const OrderSheet = ({
 
         <div>
           <Label htmlFor="phone" className="text-sm font-semibold mb-2 block">
-            Téléphone <span className="text-red-500">*</span>
+            Téléphone /الهاتف<span className="text-red-500">*</span>
           </Label>
           <div className="flex">
           <Input
@@ -15888,7 +15888,7 @@ const OrderSheet = ({
 
         <div>
           <Label htmlFor="wilayaa" className="text-sm font-semibold mb-2 block">
-            Wilaya <span className="text-red-500">*</span>
+            Wilaya /الولاية<span className="text-red-500">*</span>
           </Label>
           <Select
             value={selectedProvince.toString()}
@@ -15916,7 +15916,7 @@ const OrderSheet = ({
 
         <div>
           <Label htmlFor="commune" className="text-sm font-semibold mb-2 block">
-            Commune <span className="text-red-500">*</span>
+            Commune /	البلدية<span className="text-red-500">*</span>
           </Label>
           <Select value={selectedCommune} onValueChange={setSelectedCommune} disabled={!selectedProvince} required>
             <SelectTrigger className="w-full focus:ring-rose-500 focus:border-rose-500">
@@ -15981,7 +15981,7 @@ const OrderSheet = ({
 
             {/* Color Selection Dropdown */}
             <div>
-              <Label className="text-sm font-semibold mb-2 block">Couleur:</Label>
+              <Label className="text-sm font-semibold mb-2 block">Couleur /اللون:</Label>
               <Select value={selectedColor} onValueChange={setSelectedColor}>
                 <SelectTrigger className="w-full h-9 text-sm">
                   <SelectValue placeholder="Sélectionner couleur" />
@@ -15998,7 +15998,7 @@ const OrderSheet = ({
 
             {/* Size Selection Dropdown */}
             <div>
-              <Label className="text-sm font-semibold mb-2 block">Pointure:</Label>
+              <Label className="text-sm font-semibold mb-2 block">Pointure /المقاس:</Label>
               <Select value={selectedSize} onValueChange={setSelectedSize}>
                 <SelectTrigger className="w-full h-9 text-sm">
                   <SelectValue placeholder="Sélectionner pointure" />
@@ -16015,7 +16015,7 @@ const OrderSheet = ({
 
             {/* Quantity Selection */}
             <div>
-              <Label className="text-sm font-semibold mb-2 block">Quantité:</Label>
+              <Label className="text-sm font-semibold mb-2 block">Quantité /الكمية:</Label>
               <div className="flex items-center border border-stone-200 dark:border-stone-700 rounded-md w-24 overflow-hidden">
                 <Button
                   type="button"
@@ -16061,18 +16061,18 @@ const OrderSheet = ({
   {/* Horizontal Summary */}
   <div className="flex justify-between text-sm font-semibold text-gray-700 dark:text-white border-b pb-2 mb-2">
     <div className="flex flex-col items-start w-1/3">
-      <span className="text-xs text-gray-500">Prix du Produit</span>
-      <span className="text-blue-700 dark:text-blue-400">{productTotal} DZD</span>
+      <span className="text-m text-gray-500">سعر المنتج</span>
+      <span className="text-blue-700 dark:text-blue-400 text-lg">{productTotal} DZD</span>
     </div>
     <div className="flex flex-col items-center w-1/3">
-      <span className="text-xs text-gray-500">Tarifs de livraison</span>
-      <span className="text-blue-700 dark:text-blue-400">
+      <span className="text-m text-gray-500">سعر التوصيل</span>
+      <span className="text-blue-700 dark:text-blue-400 text-lg">
         {shippingCost ? `${shippingCost} DZD` : "N/A"}
       </span>
     </div>
     <div className="flex flex-col items-end w-1/3">
-      <span className="text-xs font-bold text-red-600">TOTAL (DZD)</span>
-      <span className="text-blue-700 dark:text-blue-400">{grandTotal} DZD</span>
+      <span className="text-m font-bold text-red-600"> سعر الاجمالي (DZD)</span>
+      <span className="text-blue-700 dark:text-blue-400 text-lg">{grandTotal} DZD</span>
     </div>
   </div>
 
@@ -16544,10 +16544,10 @@ if (typeof window !== "undefined") {
     {/* Scrollable main content */}
     <div className="overflow-y-auto flex-1 px-4 pb-36">
       <SheetHeader>
-        <SheetTitle>Finaliser votre commande</SheetTitle>
-        <SheetDescription>
-          Remplissez vos informations pour confirmer votre commande
-        </SheetDescription>
+      <SheetTitle>إتمام الطلب</SheetTitle>
+<SheetDescription>
+يرجى ملء معلوماتك لتأكيد الطلب
+</SheetDescription>
       </SheetHeader>
 
       <div className="mt-6">
