@@ -16377,8 +16377,33 @@ if (typeof window !== "undefined") {
       <CountdownBanner />
       <main className="container mx-auto px-4 py-12">
         <div className="grid lg:grid-cols-2 gap-x-12 gap-y-8 max-w-7xl mx-auto">
+          
+        <div className="space-y-4 order-1 lg:order-1">
+              <p className="text-sm text-rose-600 dark:text-rose-400 uppercase tracking-wider font-semibold">
+                {productData.boutiqueName}
+              </p>
+              <h1 className="text-4xl font-bold text-gray-900 dark:text-white leading-tight">{productData.title}</h1>
+              <h1 className="text-4xl font-bold text-gray-900 dark:text-white leading-tight">
+                {productData.productTitle}
+              </h1>
+              <p className="text-gray-600 dark:text-stone-300 text-lg leading-relaxed hidden md:block">
+                Découvrez l'élégance et le confort avec nos mules sabots premium. Parfaites pour la femme moderne qui ne
+                veut pas choisir entre style et confort.
+              </p>
+            </div>
+
+
+            <div className="flex items-center gap-4 p-4 bg-stone-100 dark:bg-slate-800 rounded-xl order-2 lg:order-2">
+              <span className="text-lg text-gray-500 dark:text-stone-400 line-through">
+                DZ {productData.priceBefore}
+              </span>
+              <span className="text-3xl font-bold text-gray-900 dark:text-white">DZ {productData.priceAfter}</span>
+              <Badge className="inline-flex items-center whitespace-nowrap bg-rose-500 text-white px-3 py-1 text-sm">
+                En vente
+              </Badge>
+            </div>
           {/* Product Images */}
-          <div className="space-y-6 lg:order-1">
+          <div className="space-y-6 order-3 lg:order-3">
             <div className="relative group">
               <div
                 className="aspect-square bg-white dark:bg-slate-800 rounded-2xl overflow-hidden cursor-zoom-in shadow-lg hover:shadow-xl transition-all duration-500"
@@ -16444,60 +16469,11 @@ if (typeof window !== "undefined") {
           </div>
 
           {/* Product Details */}
-          <div className="flex flex-col gap-8 lg:order-2">
-            <div className="flex items-center gap-4 p-4 bg-stone-100 dark:bg-slate-800 rounded-xl order-3 lg:order-2">
-              <span className="text-lg text-gray-500 dark:text-stone-400 line-through">
-                DZ {productData.priceBefore}
-              </span>
-              <span className="text-3xl font-bold text-gray-900 dark:text-white">DZ {productData.priceAfter}</span>
-              <Badge className="inline-flex items-center whitespace-nowrap bg-rose-500 text-white px-3 py-1 text-sm">
-                En vente
-              </Badge>
-            </div>
+          <div className="flex flex-col gap-8 order-4 lg:order-2">
 
-            <div className="space-y-4 order-4 lg:order-1">
-              <p className="text-sm text-rose-600 dark:text-rose-400 uppercase tracking-wider font-semibold">
-                {productData.boutiqueName}
-              </p>
-              <h1 className="text-4xl font-bold text-gray-900 dark:text-white leading-tight">{productData.title}</h1>
-              <h1 className="text-4xl font-bold text-gray-900 dark:text-white leading-tight">
-                {productData.productTitle}
-              </h1>
-              <p className="text-gray-600 dark:text-stone-300 text-lg leading-relaxed hidden md:block">
-                Découvrez l'élégance et le confort avec nos mules sabots premium. Parfaites pour la femme moderne qui ne
-                veut pas choisir entre style et confort.
-              </p>
-            </div>
 
-            <div className="space-y-4 order-6 lg:order-6">
-              <Label className="text-lg font-semibold text-gray-900 dark:text-white">Quantité</Label>
-              <div className="flex items-center border-2 border-stone-200 dark:border-stone-700 rounded-xl w-40 overflow-hidden">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-full rounded-none"
-                  onClick={() => handleQuantityChange(-1)}
-                >
-                  -
-                </Button>
-                <Input
-                  type="number"
-                  value={quantity}
-                  className="border-0 bg-transparent text-center focus-visible:ring-0 font-semibold text-lg w-full"
-                  readOnly
-                />
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-full rounded-none"
-                  onClick={() => handleQuantityChange(1)}
-                >
-                  +
-                </Button>
-              </div>
-            </div>
 
-            <div className="space-y-4 order-1 lg:order-5">
+            <div className="space-y-4 order-4 lg:order-5">
               <Label className="text-lg font-semibold text-gray-900 dark:text-white">Couleur</Label>
               <div className="flex flex-wrap gap-3">
                 {productData.colorImages.map((color: any, index) => (
@@ -16518,7 +16494,7 @@ if (typeof window !== "undefined") {
               </div>
             </div>
 
-            <div className="space-y-4 order-2 lg:order-4">
+            <div className="space-y-4 order-5 lg:order-4">
               <Label className="text-lg font-semibold text-gray-900 dark:text-white">Pointure</Label>
               <div className="flex flex-wrap gap-3">
                 {["37", "38", "39", "40", "41"].map((size: string) => (
@@ -16554,15 +16530,15 @@ if (typeof window !== "undefined") {
             {/* Order Now Button */}
             <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50">
         <Sheet open={isOrderSheetOpen} onOpenChange={setIsOrderSheetOpen}>
-          <SheetTrigger asChild>
-            <Button className="relative bg-gradient-to-r from-slate-800 to-slate-900 hover:from-slate-900 hover:to-black dark:from-rose-600 dark:to-rose-700 dark:hover:from-rose-700 dark:hover:to-rose-800 text-white px-8 py-4 text-lg font-bold rounded-full shadow-2xl transform transition-all duration-300 animate-bounce-gentle hover:scale-110 hover:shadow-3xl border-2 border-white/20">
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer rounded-full"></div>
-              <LucideIcons.ShoppingCart className="w-6 h-6 mr-3 animate-pulse" />
-              <span className="relative z-10">Commander maintenant</span>
-              <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full animate-ping"></div>
-              <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full"></div>
-            </Button>
-          </SheetTrigger>
+        <SheetTrigger asChild>
+  <Button className="w-full relative bg-gradient-to-r from-slate-800 to-slate-900 hover:from-slate-900 hover:to-black dark:from-rose-600 dark:to-rose-700 dark:hover:from-rose-700 dark:hover:to-rose-800 text-white px-8 py-4 text-lg font-bold rounded-full shadow-2xl transform transition-all duration-300 animate-bounce hover:scale-105 hover:shadow-3xl border-2 border-white/20">
+    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer rounded-full"></div>
+    <LucideIcons.ShoppingCart className="w-6 h-6 mr-3 animate-pulse" />
+    <span className="relative z-10">Commander maintenant</span>
+    <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full animate-ping"></div>
+    <div className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full"></div>
+  </Button>
+</SheetTrigger>
           <SheetContent className="w-full sm:max-w-lg p-0">
   <div className="relative flex flex-col h-full">
     {/* Scrollable main content */}
