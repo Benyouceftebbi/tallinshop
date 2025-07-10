@@ -16595,7 +16595,7 @@ router.push(
         key={index}
         src={url}
         alt={`Promo ${index + 1}`}
-        className="w-full mb-4 rounded-xl shadow-md"
+        className="w-full mb-4 rounded-xl shadow-md mt-8"
       />
     ))}
 
