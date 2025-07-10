@@ -15930,6 +15930,7 @@ export default function ProductPage() {
   const [name, setName] = useState("")
   const [phone, setPhone] = useState("")
 
+const router = useRouter();
 const [lastSubmitTime, setLastSubmitTime] = useState<number | null>(null);
 const [activeTab, setActiveTab] = useState("guarantee")
 const [timeLeft, setTimeLeft] = useState({
@@ -16193,8 +16194,8 @@ const depots = enrichedArticles
 order.orderReference = generateReferenceFromDepots(depots);
 
 // 🔁 Save both raw and enriched orders
-await addDoc(collection(firestore, "Orders"), {...orderData,slug:productData.slug}); // Shopify raw order
-await addDoc(collection(firestore, "orders"), {...order,slug:productData.slug});     // enriched internal order
+//await addDoc(collection(firestore, "Orders"), {...orderData,slug:productData.slug}); // Shopify raw order
+//await addDoc(collection(firestore, "orders"), {...order,slug:productData.slug});     // enriched internal order
 if (typeof window !== "undefined") {
   if (window.fbq) {
     window.fbq("track", "Purchase", {
@@ -16216,8 +16217,10 @@ if (typeof window !== "undefined") {
 }
 
 }
-//router.push(`/thank-you?name=${encodeURIComponent(name)}&phone=${encodeURIComponent(phone)}&total=${grandTotal}`);
+const total = order.totalPrice;
 
+router.push(
+  `/thank-you?name=${encodeURIComponent(order.name)}&phone=${encodeURIComponent(order.phone)}&product=${encodeURIComponent(productData.productTitle)}&color=${encodeURIComponent(selectedColor)}&size=${encodeURIComponent(selectedSize)}&qty=${quantity}&price=${productData.priceAfter}&&shipping=${order.deliveryPrice}&total=${grandTotal}&delivery=${encodeURIComponent(order.deliveryType)}`);
  setShowThankYou(true)
 } catch (error) {
   console.error("Error adding document:", error)
@@ -16368,14 +16371,15 @@ if (typeof window !== "undefined") {
               <div className="space-y-1">
                 <div className="flex items-center gap-3">
                  
-                  <Input
-                    placeholder={productDataa.form.phoneLabel}
-                    className={`flex-1 text-right ${errors.phone ? "border-red-500" : ""}`}
-                    required
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                  
-                  />
+      <Input
+  type="tel"
+  inputMode="numeric"
+  placeholder={productDataa.form.phoneLabel}
+  className={`flex-1 text-right ${errors.phone ? "border-red-500" : ""}`}
+  required
+  value={phone}
+  onChange={(e) => setPhone(e.target.value)}
+/>
                 </div>
                 {errors.phone && <p className="text-red-500 text-sm text-right">{errors.phone}</p>}
               </div>
@@ -16586,6 +16590,14 @@ if (typeof window !== "undefined") {
           </div>
         </div>
 
+ {productData?.promoImages.map((url, index) => (
+      <img
+        key={index}
+        src={url}
+        alt={`Promo ${index + 1}`}
+        className="w-full mb-4 rounded-xl shadow-md"
+      />
+    ))}
 
 
         {/* Promotional Banner */}
