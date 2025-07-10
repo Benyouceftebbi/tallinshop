@@ -16278,7 +16278,7 @@ if (typeof window !== "undefined") {
       <div className="max-w-7xl mx-auto px-4 py-8 pb-32">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Product Images */}
-          <div className="space-y-6 order-3 lg:order-3">
+          <div className="space-y-6 ">
             <div className="relative group">
               <div
                 className="aspect-square bg-white dark:bg-slate-800 rounded-2xl overflow-hidden cursor-zoom-in shadow-lg hover:shadow-xl transition-all duration-500"
