@@ -16693,6 +16693,31 @@ if (typeof window !== "undefined") {
 
       <Footer facebookUrl={productData.facebookUrl} instagramUrl={productData.instagramUrl} />
       <WhatsAppButton />
+              {isZoomed && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center p-4"
+            onClick={() => setIsZoomed(false)}
+          >
+            <div className="relative max-w-4xl max-h-full">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute -top-12 right-0 text-white hover:bg-white/20 z-10"
+                onClick={() => setIsZoomed(false)}
+              >
+                <LucideIcons.X className="w-6 h-6" />
+              </Button>
+              <Image
+                src={zoomedImage || "/placeholder.svg"}
+                alt="Zoomed product image"
+                width={800}
+                height={800}
+                className="max-w-full max-h-[80vh] object-contain rounded-lg"
+                onClick={(e) => e.stopPropagation()}
+              />
+            </div>
+          </div>
+        )}
       <div className="h-24"></div>
 
 <style jsx>{`
