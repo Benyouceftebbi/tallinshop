@@ -15866,9 +15866,9 @@ const productDataa = {
   additionalInfo:
     "لقد تمت تجربة إرجاع سهلة بما فيه الكفاية والمشاكل والمشاكل في حالة أي إرجاع أو تغيير. منتج ليس بما جاء يؤدي بما اشتراك خلافة ويمكن بحماية استرداد مؤكد.",
   promotion: {
-    title: "عرض محدود! خصم 40%",
-    description: "هذا المنتج لك مع مرفق، لكن الكمية محدودة. لذا تصرف بسرعة قبل انتهاء العرض.",
-    guarantee: "ضمان مؤكد نقل كم",
+title: "عرض محدود! خصم 20%",
+description: "الكمية محدودة، سارع بالطلب قبل انتهاء العرض!",
+guarantee: "ضمان مؤكد على المنتج"
   },
   discountTimer: {
     message: "خصم خاص ينتهي خلال:",
@@ -15882,24 +15882,10 @@ const productDataa = {
   testimonials: {
     title: "صور العملاء",
     images: [
-      "/placeholder.svg?height=200&width=200",
-      "/placeholder.svg?height=200&width=200",
-      "/placeholder.svg?height=200&width=200",
-      "/placeholder.svg?height=200&width=200",
-      "/placeholder.svg?height=200&width=200",
-      "/placeholder.svg?height=200&width=200",
-      "/placeholder.svg?height=200&width=200",
-      "/placeholder.svg?height=200&width=200",
-      "/placeholder.svg?height=200&width=200",
-      "/placeholder.svg?height=200&width=200",
-      "/placeholder.svg?height=200&width=200",
-      "/placeholder.svg?height=200&width=200",
-      "/placeholder.svg?height=200&width=200",
-      "/placeholder.svg?height=200&width=200",
-      "/placeholder.svg?height=200&width=200",
-      "/placeholder.svg?height=200&width=200",
-      "/placeholder.svg?height=200&width=200",
-      "/placeholder.svg?height=200&width=200",
+      "https://firebasestorage.googleapis.com/v0/b/tullin-ecce0.firebasestorage.app/o/testimonials%2FWhatsApp%20Image%202025-07-01%20at%208.18.25%20PM.jpeg?alt=media&token=f4675141-096b-4490-803f-5120c9ab301c",
+      "https://firebasestorage.googleapis.com/v0/b/tullin-ecce0.firebasestorage.app/o/testimonials%2FWhatsApp%20Image%202025-07-01%20at%208.18.25%20PM%20(1).jpeg?alt=media&token=c6dc9dde-387d-4f89-8ec9-56294a99e643",
+      "https://firebasestorage.googleapis.com/v0/b/tullin-ecce0.firebasestorage.app/o/testimonials%2FWhatsApp%20Image%202025-07-01%20at%208.18.26%20PM.jpeg?alt=media&token=f232cc19-f25c-431d-a78c-22a84a245e66",
+      "https://firebasestorage.googleapis.com/v0/b/tullin-ecce0.firebasestorage.app/o/testimonials%2FWhatsApp%20Image%202025-07-01%20at%208.18.28%20PM.jpeg?alt=media&token=baba4adb-bc53-4c13-8c77-56b7d261b510",
     ],
   },
   productImages: [
@@ -16354,19 +16340,9 @@ if (typeof window !== "undefined") {
 
             {/* Rating and Price */}
             <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <div className="flex">
-                  {[...Array(5)].map((_, i) => (
-                    <span key={i} className="text-gray-300">
-                      ★
-                    </span>
-                  ))}
-                </div>
-                <span className="text-sm text-gray-500">({productDataa.rating.count})</span>
-              </div>
               <div className="flex items-center gap-3">
-                <span className="text-2xl font-bold text-gray-900">د.ج{productData.priceAfter}</span>
-                <span className="text-lg text-gray-400 line-through">د.ج{productData.priceBefore}</span>
+                <span className="text-2xl font-bold text-gray-900">{productData.priceAfter}د.ج</span>
+                <span className="text-lg text-gray-400 line-through">{productData.priceBefore}د.ج</span>
               </div>
             </div>
 
@@ -16575,13 +16551,6 @@ if (typeof window !== "undefined") {
           </div>
         </div>
       </div>
-
-            {/* Stock Status */}
-            <div className="flex items-center gap-2 text-red-500 text-sm">
-              <span className="w-2 h-2 bg-red-500 rounded-full"></span>
-              <span>{productDataa.stock.message}</span>
-            </div>
-
             {/* Purchase Button */}
             <Button
               id="main-order-button"
@@ -16610,52 +16579,17 @@ if (typeof window !== "undefined") {
                 </div>
                 <div className="text-sm">
                   <div className="font-medium">{productDataa.shipping.freeShipping}</div>
-                  <div className="text-gray-500">{productDataa.shipping.freeShippingDesc}</div>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
-                  <LucideIcons.RotateCcw className="w-5 h-5 text-gray-600" />
-                </div>
-                <div className="text-sm">
-                  <div className="font-medium">{productDataa.shipping.returnPolicy}</div>
-                  <div className="text-gray-500">{productDataa.shipping.returnPolicyDesc}</div>
+                  <div className="font-medium">{productDataa.shipping.freeShippingDesc}</div>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Tabs Section */}
-        <div className="mt-12">
-          <div className="flex justify-center mb-6">
-            <div className="bg-gray-100 rounded-full p-1 flex">
-              {Object.entries(productDataa.tabs).map(([key, tab]) => (
-                <button
-                  key={key}
-                  onClick={() => setActiveTab(key)}
-                  className={`px-6 py-2 rounded-full text-sm font-medium transition-colors ${
-                    activeTab === key ? "bg-white shadow-sm" : "text-gray-600"
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-          </div>
 
-          {/* Tab Content */}
-          <div className="text-center text-gray-600 mb-8">
-            <p>{productDataa.tabs[activeTab as keyof typeof productData.tabs].content}</p>
-          </div>
-
-          <div className="text-center text-gray-600 mb-8">
-            <p>{productDataa.additionalInfo}</p>
-          </div>
-        </div>
 
         {/* Promotional Banner */}
-        <div className="relative bg-gradient-to-r from-purple-900 to-purple-800 rounded-2xl overflow-hidden text-white text-center py-12 px-6">
+        <div className="relative bg-gradient-to-r from-purple-900 to-purple-800 rounded-2xl overflow-hidden text-white text-center py-12 px-6 mt-8">
           <div className="relative z-10">
             <div className="mb-6">
               <Image
@@ -16724,17 +16658,17 @@ if (typeof window !== "undefined") {
         <div className="flex justify-between text-sm font-semibold text-gray-700 dark:text-white border-b pb-2 mb-2">
     <div className="flex flex-col items-start w-1/3">
       <span className="text-m text-gray-500">سعر المنتج</span>
-      <span className="text-blue-700 dark:text-blue-400 text-lg">{productTotal} DZD</span>
+      <span className="text-blue-700 dark:text-blue-400 text-lg">{productTotal} د.ج</span>
     </div>
     <div className="flex flex-col items-center w-1/3">
       <span className="text-m text-gray-500">سعر التوصيل</span>
       <span className="text-blue-700 dark:text-blue-400 text-lg">
-        {shippingCost ? `${shippingCost} DZD` : "N/A"}
+        {shippingCost ? `${shippingCost} د.ج` : "N/A"}
       </span>
     </div>
     <div className="flex flex-col items-end w-1/3">
-      <span className="text-m font-bold text-red-600"> سعر الاجمالي (DZD)</span>
-      <span className="text-blue-700 dark:text-blue-400 text-lg">{grandTotal} DZD</span>
+      <span className="text-m font-bold text-red-600"> سعر الاجمالي (د.ج)</span>
+      <span className="text-blue-700 dark:text-blue-400 text-lg">{grandTotal} د.ج</span>
     </div>
   </div>
           <Button
