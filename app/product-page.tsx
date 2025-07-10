@@ -16431,40 +16431,49 @@ router.push(
                 </div>
                 {errors.commune && <p className="text-red-500 text-sm text-right">{errors.commune}</p>}
               </div>
-              <div className="space-y-1">
-                <div className="flex items-center gap-3">
-                
-                  <Select value={selectedDeliveryMethod || ""}
-          onValueChange={setSelectedDeliveryMethod}  required>
-                  <SelectTrigger className={`flex-1 text-right ${errors.commune ? "border-red-500" : ""}`}>
-                      <SelectValue placeholder={`نوع التوصيل`} />
-                    </SelectTrigger>
-                    <SelectContent>
-            {[
+<div className="space-y-2">
+    <label className="block font-semibold text-right">نوع التوصيل</label>
+
+ <div className={`space-y-3 ${errors.commune ? "border border-red-500 rounded-xl p-3" : ""}`}>
+    {[
             {
               id: "domicile",
-              name: "À domicile",
+               name: "التوصيل للمنزل",
               description: "Livraison à votre adresse",
               cost: 400,
             },
             {
               id: "stopdesk",
-              name: "StopDesk",
+                name: "نقطة الاستلام (StopDesk)",
               description: "Point de retrait",
               cost: 200,
               info: "Sélectionnez un point de retrait StopDesk près de chez vous après validation de la commande.",
             },
-          ].map((method: any) => (
-                  <SelectItem value={method.id} id={method.id}  key={method.id}>
-                      <span className="font-semibold text-gray-800 dark:text-white">{method.name}</span> - {method.description}
-                <span className="block text-xs text-gray-800 dark:text-stone-400 mt-1">
-                  +{"DZ"} {deliveryPrices[method.id]|| "0.00"}
-                </span>
-                  </SelectItem>
-                ))}
-            </SelectContent>
-                  </Select>
-                </div>
+          ].map((method) => (
+ <label
+        key={method.id}
+        className={`flex items-start gap-2 cursor-pointer p-2 border rounded-lg transition text-sm hover:shadow-sm ${
+          selectedDeliveryMethod === method.id
+            ? "border-purple-600 ring-1 ring-purple-300"
+            : "border-gray-300 dark:border-gray-600"
+        }`}
+      >
+        <input
+          type="radio"
+          name="delivery"
+          value={method.id}
+          checked={selectedDeliveryMethod === method.id}
+          onChange={() => setSelectedDeliveryMethod(method.id)}
+          className="mt-1 accent-purple-600"
+          required
+        />
+        <div className="flex-1 text-right space-y-0.5">
+          <div className="font-semibold text-gray-900 dark:text-white">{method.name}</div>
+          <div className="text-xs mt-0.5 text-gray-700 dark:text-stone-300">+ دج {method.cost}</div>
+        </div>
+      </label>
+    ))}
+  </div>
                 {errors.commune && <p className="text-red-500 text-sm text-right">{errors.commune}</p>}
               </div>
             </div>
